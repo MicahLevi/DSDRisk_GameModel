@@ -8,12 +8,6 @@ public class Board {
 	private Rule[]   rules;
 	private Player[] players;
 	
-	public static class Rule {
-		private Rule_Name name;
-		private int 	  setting;
-		private int[] 	  turn_order;
-	}
-	
 	
 	public Board(long gameId, GameMap gameMap, Rule[] gameRules, Player[] gamePlayers) {
 		id      = gameId;
@@ -25,4 +19,4 @@ public class Board {
 
 }
 
-enum Rule_Name {RULE1, RULE2, RULE3}
+//enum Rule_Name {RULE1, RULE2, RULE3} removed

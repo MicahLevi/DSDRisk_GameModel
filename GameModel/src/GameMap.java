@@ -14,10 +14,12 @@ public class GameMap {
 			name    = territoryName;
 			xPos    = xPosition;
 			yPos    = yPosition;
-			borders = new ArrayList<Territory>();
+			borders = new ArrayList<Territory>(); 	//we need to make note of this because
+													//in our specs, we say this is a list of
+													//ints, but I like this better
 		}
 		
-		public void addBorder(Territory borderTerritory) {
+		public void addBorder(Territory borderTerritory) {	//do we need to do this or is this for GameSetup???
 			borders.add(borderTerritory);
 		}
 	}
@@ -36,5 +38,6 @@ public class GameMap {
 	
 	public GameMap() {
 		//TODO: This should read in the JSON map or mapfile
+		//this should read in just the map object that GameSetup deals with
 	}
 }

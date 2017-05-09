@@ -1,11 +1,11 @@
 
 public class Card {
-	private String territory;
-	private int num_units;
+	private int territory; //territory
+	private int type; //cannon,infantry,etc
 	
-	public Card(String territory_name, int number_of_units) {
+	public Card(int territory_name, int number_of_units) {
 		territory = territory_name;
-		num_units = number_of_units;
+		type = number_of_units;
 	}
 }
 

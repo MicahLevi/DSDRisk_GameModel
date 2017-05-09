@@ -2,11 +2,11 @@ import java.util.Map;
 
 public class GameState {
 	
-	private Map<String, Army> 	army_distribution;
+	private Map<String, Army> 	army_distribution; //this should be string if we are passing ints in
 	private Player[] 			players;
 	private long 				game_id;
 	private int 				player_turn;
-	private GamePhase 			game_phase;
+	private int 				game_phase;
 	private int 				winner;
 	private Card[] 				deck;
 	
@@ -42,4 +42,4 @@ public class GameState {
 	
 }
 
-enum GamePhase{DEPLOY, ATTACK, REINFORCE};
+//enum GamePhase{DEPLOY, ATTACK, REINFORCE};
