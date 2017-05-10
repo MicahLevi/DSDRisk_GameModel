@@ -1,8 +1,11 @@
 import java.util.Map;
 
+import com.google.gson.Gson;
+
 public class Model_Controller {
 	
 	private Board board;
+	private Gson gson;
 	/**
 	 * Have GameSetup already create the board and pass it in
 	 * 
@@ -39,19 +42,27 @@ public class Model_Controller {
 	
 	/**
 	 * function that handles updating the GameState
-	 * 
+	 * Takes in an object. 
+	 * If string, convert to GameState obj
+	 * else, cast obj to gamestate
 	 * @param currState
 	 * @return
 	 */
-	public GameState update(GameState currState)
+	public GameState update(Object currState)
 	{
-		return currState;
+		GameState locState;
+		if(currState == String.class)
+			locState = gson.fromJson((String) currState, GameState.class);
+		else
+			locState = (GameState) currState;
+		return locState;
+		
+		//do we want to return a json??
 	}
 	
-	//??
 	public Model_Controller()
 	{
-		
+		gson = new Gson();
 	}
 	
 }
