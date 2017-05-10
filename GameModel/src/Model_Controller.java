@@ -48,6 +48,16 @@ public class Model_Controller {
 	 * @param currState
 	 * @return
 	 */
+	public void initGame(Object pkg)
+	{
+		SetupPackage locPkg;
+		if(pkg == String.class)
+			locPkg = gson.fromJson((String) pkg, SetupPackage.class);
+		else
+			locPkg = (SetupPackage)pkg;
+		board = new Board(0,locPkg.map,locPkg.rules,locPkg.players);
+	}
+	
 	public GameState update(Object currState)
 	{
 		GameState locState;
