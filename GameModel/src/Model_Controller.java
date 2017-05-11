@@ -52,6 +52,7 @@ public class Model_Controller {
 	{
 		SetupPackage locPkg;
 		if(pkg == String.class)
+			//we must clarify what we are getting from game setup to move forward here
 			locPkg = gson.fromJson((String) pkg, SetupPackage.class);
 		else
 			locPkg = (SetupPackage)pkg;
