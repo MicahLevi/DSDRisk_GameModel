@@ -71,6 +71,31 @@ public class Model_Controller {
 		//do we want to return a json??
 	}
 	
+	public int[][] attackCountry(GameState curState, int attack_id, int defend_id, int num_units) throws Exception{
+		try {
+			if (board.territoryIsAdjacent(attack_id, defend_id))
+				return curState.attackCountry(attack_id, defend_id, num_units);
+		} catch (Exception e) {
+			throw e;
+		}
+		throw new Exception("Territories must be adjacent to attack");
+	}
+	
+	public void fortifyCountry(GameState curState, int from_id, int to_id, int num_units) throws Exception {
+		int status = -3;
+		if (board.territoryIsAdjacent(from_id, to_id))
+			status = curState.fortifyCountry(from_id, to_id, num_units);
+		switch (status) {
+			case -1:
+				throw new Exception("Fortifying to wrong territory");
+			case -2:
+				throw new Exception("Fortifying: too many units requested to move");
+			case -3:
+				throw new Exception("Fortifying: territories must be adjacent");
+		}
+		
+	}
+	
 	public Model_Controller()
 	{
 		gson = new Gson();

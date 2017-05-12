@@ -16,6 +16,9 @@ public class Board {
 		players = gamePlayers;
 	}
 	
+	public boolean territoryIsAdjacent(int ter1_id, int ter2_id) {
+		return map.isAdjacent(ter1_id, ter2_id);
+	}
 
 }
 

@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -31,8 +33,90 @@ public class GameState {
 		army_distribution.replace(country_id, locArmy);
 	}
 	
-	public void attackCountry(int attack_id, int defend_id, int num_units) {
+	
+	/**
+	 * allows one player to attack another with a given number of units
+	 * returns:
+
+	 * 
+	 * @param attack_id
+	 * @param defend_id
+	 * @param num_units
+	 */
+	public int[][] attackCountry(int attack_id, int defend_id, int num_units) throws Exception
+	{
+		Army attack = army_distribution.get(attack_id);
+		Army defend = army_distribution.get(defend_id);
+		int[] atk_dice = new int[0];
+		int[] def_dice = new int[0];
+		if (attack.owner_id == defend.owner_id)
+		{
+			throw new Exception("Cannot attack your own territory");
+		}
+		if (attack.num_armies < num_units || num_units < 1
+			|| attack.num_armies < 2)
+			throw new Exception("Invalid number of units for attack");
+		int atk_units = attack.num_armies;
+		int def_units = defend.num_armies;
+		//For now we attack until there is a winner
+		while (atk_units > 0 && def_units > 0)
+		{
+			//Determine number of dice for attacker
+			switch (num_units)
+			{
+				case 1: case 2:	// roll 1 die
+					atk_dice = new int[]{(int)(Math.random()*6+1)};
+					break;
+				case 3:			// roll 2 dice
+					atk_dice = new int[]{(int)(Math.random()*6+1),
+					                     (int)(Math.random()*6+1)};
+					Arrays.sort(atk_dice);
+					break;
+				default:		// roll 3 dice
+					atk_dice = new int[] {(int)(Math.random()*6+1),
+					                      (int)(Math.random()*6+1),
+					                      (int)(Math.random()*6+1)};
+					break;
+			}
+			//Determine number of dice for defender
+			switch (def_units)
+			{
+				case 1:
+					def_dice = new int[]{(int)(Math.random()*6+1)};
+					break;
+				default:
+					def_dice = new int[]{(int)(Math.random()*6+1),
+										 (int)(Math.random()*6+1)};
+					Arrays.sort(def_dice);
+					break;
+			}
+			int i = 0;
+			
+			while (i<atk_dice.length && i<def_dice.length)
+			{
+				if (atk_dice[i] > def_dice[i])
+					def_units--;
+				else
+					atk_units--;
+			}
+		}
+		//Attacking territory always loses the units it sends
+		attack.num_armies -= num_units;
 		
+		//Defending territory goes to the winner
+		if (def_units > 0)
+		{
+			defend.num_armies = def_units;
+		}
+		else
+		{
+			defend.num_armies = atk_units;
+			defend.owner_id = attack.owner_id;
+		}
+		
+		army_distribution.replace(attack_id, attack);
+		army_distribution.replace(defend_id, defend);
+		return new int[][]{atk_dice, def_dice};
 	}
 	
 	/**
