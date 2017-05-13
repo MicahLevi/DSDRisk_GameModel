@@ -71,6 +71,29 @@ public class Model_Controller {
 		//do we want to return a json??
 	}
 	
+	/*
+	 * Alters the passed gamestate based on the given commands. Does not enforce
+	 * ruleset, player turn order, or anything similar. Commands are passed as a 
+	 * 2D array of Strings, where command[x][0] is the command and 
+	 * command[x][y >= 1] are, if any exist, the parameters to use for it. If 
+	 * passing something that isn't a String representation of an integer or
+	 * a String itself, then the item must be serialized.
+	 * 
+	 * Accepts these commands: 
+	 * - 'add A B' to add B armies to country A
+	 * - 'attack A B C' to send C armies from country A to attack country B
+	 * - 'fortify A B C' to send C armies from country A to fortify country B
+	 * - 'trade A B' to trade in cards A for player B, where A is a serialized Card[]
+	 * - 'wincheck' to check for a win condition
+	 */
+	public GameState update_debug(GameState currState, String[] commands){
+	    // TODO: finish debugging command interpreter
+	    for (int i = 0; i < commands.length; i++){
+	        System.out.println(commands[i]);
+	    }
+	    return currState;
+	}
+	
 	public Model_Controller()
 	{
 		gson = new Gson();
