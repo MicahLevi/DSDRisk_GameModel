@@ -70,7 +70,7 @@ public class Model_Controller {
 		
 		//do we want to return a json??
 	}
-	
+
 	/*
 	 * Alters the passed gamestate based on the given commands. Does not enforce
 	 * ruleset, player turn order, or anything similar. Commands are passed as a 
@@ -86,12 +86,38 @@ public class Model_Controller {
 	 * - 'trade A B' to trade in cards A for player B, where A is a serialized Card[]
 	 * - 'wincheck' to check for a win condition
 	 */
-	public GameState update_debug(GameState currState, String[] commands){
+	public GameState update_debug(GameState currState, String[][] commands){
 	    // TODO: finish debugging command interpreter
 	    for (int i = 0; i < commands.length; i++){
-	        System.out.println(commands[i]);
+	        System.out.println(commands[i][0]);
 	    }
 	    return currState;
+    }
+
+    // TODO: Add comments
+	public int[][] attackCountry(GameState curState, int attack_id, int defend_id, int num_units) throws Exception{
+		try {
+			if (board.territoryIsAdjacent(attack_id, defend_id))
+				return curState.attackCountry(attack_id, defend_id, num_units);
+		} catch (Exception e) {
+			throw e;
+		}
+		throw new Exception("Territories must be adjacent to attack");
+	}
+
+	// TODO: Add comments
+	public void fortifyCountry(GameState curState, int from_id, int to_id, int num_units) throws Exception {
+		int status = -3;
+		if (board.territoryIsAdjacent(from_id, to_id))
+			status = curState.fortifyCountry(from_id, to_id, num_units);
+		switch (status) {
+			case -1:
+				throw new Exception("Fortifying to wrong territory");
+			case -2:
+				throw new Exception("Fortifying: too many units requested to move");
+			case -3:
+				throw new Exception("Fortifying: territories must be adjacent");
+		}
 	}
 	
 	public Model_Controller()
