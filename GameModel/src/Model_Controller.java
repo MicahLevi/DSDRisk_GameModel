@@ -1,4 +1,5 @@
 import java.util.Map;
+import java.util.Arrays;
 
 import com.google.gson.Gson;
 
@@ -72,24 +73,86 @@ public class Model_Controller {
 	}
 
 	/*
-	 * Alters the passed gamestate based on the given commands. Does not enforce
-	 * ruleset, player turn order, or anything similar. Commands are passed as a 
-	 * 2D array of Strings, where command[x][0] is the command and 
-	 * command[x][y >= 1] are, if any exist, the parameters to use for it. If 
-	 * passing something that isn't a String representation of an integer or
-	 * a String itself, then the item must be serialized.
+	 * Alters the passed gamestate based on the given commands passed as an 
+	 * array of Strings, where command[x] is a space-seperated string where the 
+	 * first word is the command and the following words are the parameters as
+	 * string representations.
+	 * 
+	 * For each command, the commands[x][0] indicates the xth command to use, 
+	 * and all following elements of commands[x][y > 0] are the parameters 
+	 * necessary.
 	 * 
 	 * Accepts these commands: 
-	 * - 'add A B' to add B armies to country A
+	 * - 'add_armies A B' to add B armies to country A
 	 * - 'attack A B C' to send C armies from country A to attack country B
 	 * - 'fortify A B C' to send C armies from country A to fortify country B
-	 * - 'trade A B' to trade in cards A for player B, where A is a serialized Card[]
-	 * - 'wincheck' to check for a win condition
+	 * - 'trade_cards A B' to trade in cards A for player B, where A is a Card[] represented
+	 *   by a string of the format 'A1 A2, B1 B2, C1 C2' such that x1 is x's territory
+	 *   and x2 is x's value. This pair matches the output of Card.toString().
+	 * - 'win_check' to check for a win condition
+	 * 
+	 * In the event any of the commands return something, its output will be printed to
+	 * the system output stream (console by default).
 	 */
 	public GameState update_debug(GameState currState, String[][] commands){
 	    // TODO: finish debugging command interpreter
 	    for (int i = 0; i < commands.length; i++){
-	        System.out.println(commands[i][0]);
+	        switch (commands[i][0]){
+	            case "add_armies":
+	                currState.addArmy(
+	                       Integer.parseInt(commands[i][1]), 
+	                       Integer.parseInt(commands[i][2])
+	                );
+	                break;
+	            case "attack":
+	                try {
+                        int[][] attack_output = currState.attackCountry(
+                               Integer.parseInt(commands[i][1]),
+                               Integer.parseInt(commands[i][2]),
+                               Integer.parseInt(commands[i][3])
+                        );
+                        System.out.println("OUTPUT: " 
+                               + commands[i][0] 
+                               + ": " 
+                               + Arrays.deepToString(attack_output)
+                        );
+                    } catch (Exception e){
+                        System.out.print("EXCEPTION ON ITEM " + i + ": " + command[i][0]);
+                        System.out.println(e);
+                    }
+	                break;
+	            case "fortify":
+	                int fortify_output = currState.fortifyCountry(
+	                       Integer.parseInt(commands[i][1]),
+	                       Integer.parseInt(commands[i][2]),
+	                       Integer.parseInt(commands[i][3])
+	                );
+	                System.out.println("OUTPUT: "
+	                       + commands[i][0]
+	                       + ": "
+	                       + fortify_output
+	                );
+	                break;
+	            case "trade_cards":
+	                // Need to convert the array of strings into an array of Card objects
+	                String[] card_strings = commands[i][1].split(",");
+	                Card[] cards = new Card[card_strings.length];
+	                for (int j = 0; i < card_strings.length; i++){
+	                    cards[j] = new Card(card_strings[j]);
+	                }
+	                currState.tradeCards(cards, Integer.parseInt(commands[i][2]));
+	                break;
+	            case "win_check":
+	                System.out.println("OUTPUT: "
+	                       + commands[i][0]
+	                       + ": "
+	                       + currState.winCheck()
+	                );
+	                break;
+	            default:
+	                System.out.println("DID NOT RECOGNIZE COMMAND: " + commands[i][0]);
+	                break;
+	        }
 	    }
 	    return currState;
     }
