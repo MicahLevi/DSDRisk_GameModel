@@ -17,5 +17,22 @@ public class Card {
 	public String toString(){
 	    return territory + " " + type;
 	}
+	
+	public int getTerritory() {
+		return territory;
+	}
+
+	public void setTerritory(int territory) {
+		this.territory = territory;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
 }
 

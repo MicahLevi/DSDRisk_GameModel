@@ -1,5 +1,6 @@
 import java.util.Map;
 import java.util.Arrays;
+import java.util.Collection;
 
 import com.google.gson.Gson;
 
@@ -182,6 +183,60 @@ public class Model_Controller {
 				throw new Exception("Fortifying: territories must be adjacent");
 		}
 	}
+
+	/**
+	 * gets the amount of armies someone can place at the start of their turn
+	 * 
+	 * @param owner
+	 * @param gameState
+	 * @return
+	 */
+	private int getTurnStartArmies(int owner,GameState gameState){
+		int counter = 0;
+		counter += gameState.territoryAdder(owner);
+		counter += gameState.continentAdder(owner,board.getGameMap());
+		return counter;
+	}
+	
+	/**
+	 * if adding armies fails, returns false, otherwise true and adds
+	 * armies to pool
+	 * 
+	 * @param cards
+	 * @param gameState
+	 * @param playerId
+	 * @return
+	 */
+	private boolean addArmiesFromCards(Card[] cards, GameState gameState, int playerId){
+		int counter = getArmiesFromCards(cards,gameState,playerId);
+		if(counter==-1)
+			return false;
+		else
+		{
+			board.addArmyPool(counter);
+			return true;
+		}
+	}
+	
+	/**
+	 * Trades cards in and returns corresponding armies.
+	 * if trade in isn't valid, it returns -1 and doesn't
+	 * trade cards.
+	 * 
+	 * @param cards
+	 * @param gameState
+	 * @param playerId
+	 * @return
+	 */
+	private int getArmiesFromCards(Card[] cards, GameState gameState,int playerId){
+		if(gameState.tradeCards(cards, playerId)){
+			return board.getArmiesFromCardTurnIn();
+		}
+		else
+			return -1;
+
+	}
+	
 	
 	public Model_Controller()
 	{

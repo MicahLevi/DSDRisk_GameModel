@@ -1,4 +1,5 @@
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -41,8 +42,6 @@ public class GameState {
 	
 	/**
 	 * allows one player to attack another with a given number of units
-	 * returns:
-
 	 * 
 	 * @param attack_id
 	 * @param defend_id
@@ -126,8 +125,6 @@ public class GameState {
 	
 	/**
 	 * fortifies territories. checks for issues as well as a feature
-	 * returns:
-
 	 * 
 	 * @param from_id
 	 * @param to_id
@@ -161,11 +158,15 @@ public class GameState {
 	 * @param cards
 	 * @param playerId
 	 */
-	public void tradeCards(Card[] cards, int playerId) {
-		for(Card c: cards){
-			players[playerId].removeCard(c);
+	public boolean tradeCards(Card[] cards, int playerId) {
+		if(verifyCardTurnin(cards))
+		{
+			for(Card c: cards){
+				players[playerId].removeCard(c);
+			}
+			return true;
 		}
-		
+		return false;
 	}
 	/**
 	 * checks if someone owns all the territories
@@ -188,6 +189,73 @@ public class GameState {
 		}
 		winner = owner;
 		return owner;
+	}
+	/**
+	 * checks to see if card type are all the same or all different
+	 * returns a bool
+	 * 
+	 * @param cards
+	 * @return bool
+	 */
+	private boolean verifyCardTurnin(Card[] cards)
+	{
+		int x = cards[0].getType();
+		int y = cards[1].getType();
+		int z = cards[2].getType();
+		if(x==y&&y==z)
+			return true;
+		else if(x!=y&&x!=z&&y!=z)
+			return true;
+		else
+			return false;
+		
+	}
+	/**
+	 * Checks the continents for complete ownership and returns
+	 * the amount of armies for each complete group
+	 * 
+	 * @param owner
+	 * @param map
+	 * @return
+	 */
+	public int continentAdder(int owner, GameMap map) {
+		Collection<Army> territories = army_distribution.values();
+		int counter = 0;
+		Continent[] contList = map.getContinents();
+		boolean innerCheck = true;
+		for(Continent c: contList)
+		{
+			for(Territory t: c.territories)
+			{
+				if(army_distribution.get(t.id).owner_id!=owner){
+					innerCheck = false;
+					break;
+				}
+			}
+			if(innerCheck)
+				counter+=c.groupVal;
+		}
+		return counter;
+		
+	}
+	/**
+	 * Does the calculation for how many armies to get based on territory
+	 * @param owner
+	 * @return
+	 */
+	public int territoryAdder(int owner)
+	{
+		Collection<Army> territories = army_distribution.values();
+		int counter = 0;
+		for(Army a: territories)
+		{
+			if(a.owner_id==owner)
+				counter++;
+		}
+		counter/=3;
+		if(counter<3)
+			counter = 3;
+		return counter;
 	}
 	
 	// TODO: Clean getters and setters
@@ -233,7 +301,7 @@ public class GameState {
 	public void setDeck(Card[] deck) {
 		this.deck = deck;
 	}
-	
+
 }
 
 //enum GamePhase{DEPLOY, ATTACK, REINFORCE};
