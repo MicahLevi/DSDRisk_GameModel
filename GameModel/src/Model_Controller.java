@@ -237,7 +237,6 @@ public class Model_Controller {
 
 	}
 	
-	
 	public Model_Controller()
 	{
 		gson = new Gson();

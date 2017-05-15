@@ -16,6 +16,7 @@ public class Board {
 		rules   = gameRules;
 		players = gamePlayers;
 		cardTurninNumber = 0;
+		armyPool = 0;
 	}
 	
 	public boolean territoryIsAdjacent(int ter1_id, int ter2_id) {
