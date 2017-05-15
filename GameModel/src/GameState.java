@@ -189,6 +189,8 @@ public class GameState {
 		winner = owner;
 		return owner;
 	}
+	
+	// TODO: Clean getters and setters
 	public Map<Integer, Army> getArmy_distribution() {
 		return army_distribution;
 	}
