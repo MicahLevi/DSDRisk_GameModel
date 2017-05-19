@@ -9,14 +9,16 @@ public class Model_Controller {
 	private Board board;
 	private Gson gson;
 	private GameState locState;
+	private int self;
 	/**
 	 * Have GameSetup already create the board and pass it in
 	 * 
 	 * @param initBoard
 	 */
-	public void initGame(Board initBoard)
+	public void initGame(Board initBoard, int me)
 	{
 		board = initBoard;
+		self = me;
 	}
 	/**
 	 * We get passed our already pre-defined map with borders
@@ -25,9 +27,10 @@ public class Model_Controller {
 	 * @param aMap
 	 * @param rules
 	 */
-	public void initGame(GameMap aMap,Rule[] rules, Player[] players)
+	public void initGame(GameMap aMap,Rule[] rules, Player[] players, int me)
 	{
 		board = new Board(0,aMap,rules, players);
+		self = me;
 	}
 	
 	/**
@@ -36,11 +39,12 @@ public class Model_Controller {
 	 * @param aMap
 	 * @param players
 	 */
-	public void initGame(GameMap aMap, Player[] players)
+	public void initGame(GameMap aMap, Player[] players,int me)
 	{
 		Rule[] rules = new Rule[10];
 		rules[0] = new Rule(0,0,players); //initialize the rules ourselves given parameters
 		board = new Board(0,aMap,rules, players);
+		self = me;
 	}
 	
 	/**
@@ -51,7 +55,7 @@ public class Model_Controller {
 	 * @param currState
 	 * @return
 	 */
-	public void initGame(Object pkg)
+	public void initGame(Object pkg, int me)
 	{
 		SetupPackage locPkg;
 		if(pkg == String.class)
@@ -60,24 +64,22 @@ public class Model_Controller {
 		else
 			locPkg = (SetupPackage)pkg;
 		board = new Board(0,locPkg.map,locPkg.rules,locPkg.players);
+		self = me;
 	}
-	
-	public GameState update(Object currState)
-	{
-		locState = (GameState)parseObj(currState,GameState.class);
-		if(locState==null)
-			System.out.println("error parsing object");
-		return locState;
-		
-		//do we want to return a json??
-	}
-
 	
 	public GameState playTurn(Object currState)
 	{
 		locState = (GameState) parseObj(currState,GameState.class);
 		if(locState==null)
+		{
 			System.out.println("error parsing object");
+			return null;
+		}
+		if(locState.getPlayer_turn()!=self)
+		{
+			//updateGui;
+			return locState;
+		}
 		setInitialArmies();
 		////////////////////////
 		//gui controller here
