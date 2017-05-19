@@ -1,17 +1,4 @@
-/**
-each method represents the spawning of a new window for the gui
-TODO:
-1. write a method to spawn a window displaying dice and countries involved in an attack
-3. write a method to spawn a window showing players that the sys is setting the game up
-4. write a method to spawn a window showing host that the sys is setting the game up
-5. check user input for createAccount() and login(). The 'password' and 'password confirm' 
-   fields already have to match, but all fields currently can me empty.
-   The username has to be checked against the database for duplication
-6. finish spawnLocalGame() and spawnDistributedGame()
-7. Decide how to populate the lobby window and implement
-8. Use if statement when spawning a game to read in the type of map sent to the spawn
-   method and them spawning the correct map
-**/
+
 package riskGUI;
 
 import java.awt.*;
@@ -31,22 +18,16 @@ import java.util.ArrayList;
 public class RiskGUI extends JPanel{
 	//the two following lists will contain countries
 	//and the button which corresponds to the country
-	//we can iterate through the button list to identify
-	//which button the user clicked
+
 	public ArrayList<GUICountry> countries = new ArrayList<GUICountry>();
 	public ArrayList<JButton> myButtons = new ArrayList<JButton>();
-	private int lastCountryClicked;
 	private JPanel bottomPanel = new JPanel();
 	boolean oneIsClicked = false;
 	boolean twoIsClicked = false;
 	boolean threeIsClicked = false;
 	boolean fourIsClicked = false;
 	boolean fiveIsClicked = false;
-	int newCountry;	//this will be used to return players selection from the gui to the rest of the program
-	int fortSrc;			//this will be used to return the fortification source from the gui to the program
-	int fortDest;			//this will be used to return the fortification destination from the gui to the program
 	int threeCount = 0;
-	int turnPhase;	//this will be mapped from a turnphase controller, in this case it will mean i am selecting 
 
 	
 	public void spawnGame(String mapFile, String mapImg, String numPlayer){
@@ -54,7 +35,6 @@ public class RiskGUI extends JPanel{
 		System.out.println("The mapFile is " + mapFile);
 		System.out.println("The mapImg is " + mapImg);
 		System.out.println("The selected num of players is " + numPlayer);
-		turnPhase = 1;
 
 		JFrame frame = new JFrame(" +++ Risky Business +++ ");
 		frame.setSize(900,700);
@@ -109,8 +89,6 @@ public class RiskGUI extends JPanel{
 			System.out.println("There was no image found for the selected map gui in spawnLocalGame");
 			e.printStackTrace();
 		}
-		turnPhase = 1;	//turnphase = 1, when the map buttons will set color and store country as a particular players
-		//pickInitCntrys();
 		frame.add(bottomPanel);
 		frame.setVisible(true);
 	}
@@ -203,15 +181,12 @@ public class RiskGUI extends JPanel{
 		attkSrcP.add(attkSrcL);
 		
 		JButton endTurn = new JButton("End Attack Phase");
-		//endTurn.setFont(new Font("Arial", Font.BOLD, 25));
-		//endTurn.setForeground(Color.blue);
 		endTurn.setBounds(700, 50, 160, 60);
 		endTurn.addActionListener( new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("attkSrcB2 clicked");
-				//if(playerHasArmiesToFOrtify = true)	//if they have a country with more than one army AND which borders another country they own
 					setFortSrc();					
 			}
 		});
@@ -348,7 +323,6 @@ public class RiskGUI extends JPanel{
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("moveMin button clicked");
-				//this will end the players turn
 			}
 		});
 		
@@ -359,7 +333,6 @@ public class RiskGUI extends JPanel{
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("moveHalf button clicked");
-				//this will end the players turn
 			}
 		});
 		
@@ -370,7 +343,6 @@ public class RiskGUI extends JPanel{
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("moveMax button clicked");
-				//this will end the players turn
 			}
 		});
 		moveP.add(testM);
@@ -415,8 +387,6 @@ public class RiskGUI extends JPanel{
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("endTurn clicked");
-				//this will end the players turn
-				//turnPhase = fortify;
 			}
 		});
 		
@@ -499,13 +469,14 @@ public class RiskGUI extends JPanel{
 	
 	public void showRoll(String a, String d,int d1,int d2, int d3, int d4, int d5)
 	{
-		System.out.println("showRoll("+d1+") was called");
+		System.out.println("showRoll() was called");
 		bottomPanel.removeAll();
 		String one = Integer.toString(d1);
 		String two = Integer.toString(d2);
 		String three = Integer.toString(d3);
 		String four = Integer.toString(d4);
 		String five = Integer.toString(d5);
+		String test = Integer.toString(0);
 			
 		JPanel diceP = new JPanel();
 		diceP.setBackground(Color.lightGray);
@@ -543,7 +514,6 @@ public class RiskGUI extends JPanel{
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("diceB clicked");
-				////isRolling = false;
 				pickAttacker();
 			}
 		});
@@ -617,32 +587,6 @@ public class RiskGUI extends JPanel{
 		//we're only going to display five of them
 		//tradeVal is to display how many armies they will get if they trade
 		
-		
-		/*
- 		private static void somepaint(JPanel panel) {
-	    BufferedImage image = new BufferedImage(200,200,BufferedImage.TYPE_INT_ARGB);
-	    image.getGraphics().setColor(Color.red);
-	    image.getGraphics().fillRect(0, 0, 200, 200);
-
-	    Graphics2D graphics = (Graphics2D) panel.getGraphics();
-		This is not how you draw inside of a JPanel or JComponent.
-		
-		Don't call getGraphics() on a component as the Graphics 
-		object returned will be short-lived, and anything drawn 
-		with it will not persist. Instead do your JPanel's drawing 
-		inside of its paintComponent(Graphics G) method override. 
-		You will need to create a class that extends JPanel in order 
-		to override paintComponent(...).
-		
-		Most importantly, to see how to do Swing graphics correctly, 
-		don't guess. You'll want to read the Swing Graphics Tutorials 
-		first as it will require you to toss out some incorrect 
-		assumptions (this is what I had to do to get it right).
-		*/
-
-		
-		
-		
 		bottomPanel.removeAll();
 		String tradeValue = Integer.toString(tradeVal);
 		String first = Integer.toString(c1);
@@ -715,14 +659,8 @@ public class RiskGUI extends JPanel{
 		armies.setFont(new Font("Serif", Font.ITALIC, 40));
 		cardP.add(armies);
 		
-		ImageIcon icon1;
-		ImageIcon icon2;
-		ImageIcon icon3;
-		ImageIcon icon4;
-		ImageIcon icon5;
-		//myButton.setBorderPainted(false);
+		ImageIcon icon1, icon2, icon3, icon4, icon5;
 		try{
-			//selected = new ImageIcon(ImageIO.read(new File("imgs/card"+first+"Crossed.jpg")));
 			icon1 = new ImageIcon(ImageIO.read(new File("imgs/card"+first+".jpg")));
 			if(c1 != -1){
 				Image img = icon1.getImage();  
@@ -906,49 +844,8 @@ public class RiskGUI extends JPanel{
 				int i = myButtons.indexOf(e.getSource());
 
 				System.out.println(name + " clicked");
-				//turnPhase = 1 when claiming initial countries
-
-					//if(newCountry.isOwned = false)
-					//countries.get(i).incrementArmies();	//this increments the country num on the gui
-
-					//set country color to currentPlayers color
-				//}else if(turnPhase==2){	//turnPhase = 2 when 
-					//fortSrc = countries.get(ID-1).getID();
-					//turnPhase = 2;
-				//}else if(turnPhase == 2){
-					//fortDest = countries.get(ID-1).getID();
-				
-				/*
-				if(gamePhase == deploySrc){
-					countries.get(ID-1).incrementArmies();
-					decrement armiesLeft
-				}else if(gamePhase == fortSrc){
-					
-				}else if(gamePhase == fortDest){
-				
-				}
-					
-				if (armiesLeft == 0)
-						display attackingPanel
-						gamePhase = attack 
-				}else if(gamePhase == attack && playerOwns){
-					attkSrc = countries.get(ID-1)
-				}else if(gamePhase == attack && !playerOwns && haveBorder(src,dest) && attkSrc != null){
-					attkDest = countries.get(ID-1)
-					display confirmAnnihilatePanel(src,dest)
-					attkSrc = nul;
-					
-				}else if(playerOwns && gamePhase == fortifySrc){
-					int fortifySrc = countries.get(ID-1)
-				}else if(gamePhase == fortifyplayerOwns && playerOwns && haveBorder(src,dest) && fortSrc != null){
-					int fortifyDest = countries.get(ID-1)
-					display fortifyNumPanel
-					fortSrc = null
-				}
-					*/
 			}
 		});
 		return myButton;
 	}
-		
 }
