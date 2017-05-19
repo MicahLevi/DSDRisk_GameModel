@@ -39,7 +39,17 @@ public class GameState {
 		army_distribution.replace(country_id, locArmy);
 	}
 	
+	public boolean isOwner(int countryId, int ownerId)
+	{
+		if(army_distribution.get(countryId).owner_id==ownerId)
+			return true;
+		return false;
+	}
 	
+	public int getOwner(int countryId)
+	{
+		return army_distribution.get(countryId).owner_id;
+	}
 	/**
 	 * allows one player to attack another with a given number of units
 	 * 
@@ -213,13 +223,11 @@ public class GameState {
 	/**
 	 * Checks the continents for complete ownership and returns
 	 * the amount of armies for each complete group
-	 * 
-	 * @param owner
+	 *
 	 * @param map
 	 * @return
 	 */
-	public int continentAdder(int owner, GameMap map) {
-		Collection<Army> territories = army_distribution.values();
+	public int continentAdder(GameMap map) {
 		int counter = 0;
 		Continent[] contList = map.getContinents();
 		boolean innerCheck = true;
@@ -227,7 +235,7 @@ public class GameState {
 		{
 			for(Territory t: c.territories)
 			{
-				if(army_distribution.get(t.id).owner_id!=owner){
+				if(army_distribution.get(t.id).owner_id!=player_turn){
 					innerCheck = false;
 					break;
 				}
@@ -240,16 +248,15 @@ public class GameState {
 	}
 	/**
 	 * Does the calculation for how many armies to get based on territory
-	 * @param owner
 	 * @return
 	 */
-	public int territoryAdder(int owner)
+	public int territoryAdder()
 	{
 		Collection<Army> territories = army_distribution.values();
 		int counter = 0;
 		for(Army a: territories)
 		{
-			if(a.owner_id==owner)
+			if(a.owner_id==player_turn)
 				counter++;
 		}
 		counter/=3;
@@ -257,6 +264,27 @@ public class GameState {
 			counter = 3;
 		return counter;
 	}
+	public void incrementGamePhase(){
+		game_phase++;
+	}
+	
+	public boolean isPlayerConquered(int playerId){
+		return ownsLand(playerId);
+	}
+	
+	private boolean ownsLand(int playerId){
+		for(Army a: army_distribution.values())
+		{
+			if(a.owner_id==playerId)
+				return true;
+		}
+		return false;
+	}
+	
+	public void transferCards(int fromPlayerId, int toPlayerId) {
+		players[toPlayerId].addAllCards(players[fromPlayerId].conquerHand());
+	}
+	
 	
 	// TODO: Clean getters and setters
 	public Map<Integer, Army> getArmy_distribution() {

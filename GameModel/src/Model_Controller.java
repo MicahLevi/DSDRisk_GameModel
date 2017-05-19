@@ -8,6 +8,7 @@ public class Model_Controller {
 	
 	private Board board;
 	private Gson gson;
+	private GameState locState;
 	/**
 	 * Have GameSetup already create the board and pass it in
 	 * 
@@ -63,16 +64,42 @@ public class Model_Controller {
 	
 	public GameState update(Object currState)
 	{
-		GameState locState;
-		if(currState == String.class)
-			locState = gson.fromJson((String) currState, GameState.class);
-		else
-			locState = (GameState) currState;
+		locState = (GameState)parseObj(currState,GameState.class);
+		if(locState==null)
+			System.out.println("error parsing object");
 		return locState;
 		
 		//do we want to return a json??
 	}
 
+	
+	public GameState playTurn(Object currState)
+	{
+		locState = (GameState) parseObj(currState,GameState.class);
+		if(locState==null)
+			System.out.println("error parsing object");
+		setInitialArmies();
+		////////////////////////
+		//gui controller here
+		////////////////////////
+		return locState;
+	}
+	
+	private void setInitialArmies() {
+		board.addArmyPool(getTurnStartArmies());
+	}
+	private Object parseObj(Object obj, Class<GameState> aClass) {
+		Object aObj = null;
+		if(obj == String.class) {
+			try {
+				aObj = gson.fromJson((String) obj, aClass);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		} else
+			return obj;
+		return aObj;
+	}
 	/*
 	 * Alters the passed gamestate based on the given commands passed as an 
 	 * array of Strings, where command[x] is a space-seperated string where the 
@@ -159,10 +186,10 @@ public class Model_Controller {
     }
 
     // TODO: Add comments
-	public int[][] attackCountry(GameState curState, int attack_id, int defend_id, int num_units) throws Exception{
+	public int[][] attackCountry(int attack_id, int defend_id, int num_units) throws Exception{
 		try {
 			if (board.territoryIsAdjacent(attack_id, defend_id))
-				return curState.attackCountry(attack_id, defend_id, num_units);
+				return locState.attackCountry(attack_id, defend_id, num_units);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -170,10 +197,10 @@ public class Model_Controller {
 	}
 
 	// TODO: Add comments
-	public void fortifyCountry(GameState curState, int from_id, int to_id, int num_units) throws Exception {
+	public void fortifyCountry(int from_id, int to_id, int num_units) throws Exception {
 		int status = -3;
 		if (board.territoryIsAdjacent(from_id, to_id))
-			status = curState.fortifyCountry(from_id, to_id, num_units);
+			status = locState.fortifyCountry(from_id, to_id, num_units);
 		switch (status) {
 			case -1:
 				throw new Exception("Fortifying to wrong territory");
@@ -191,24 +218,30 @@ public class Model_Controller {
 	 * @param gameState
 	 * @return
 	 */
-	private int getTurnStartArmies(int owner,GameState gameState){
+	private int getTurnStartArmies(){
 		int counter = 0;
-		counter += gameState.territoryAdder(owner);
-		counter += gameState.continentAdder(owner,board.getGameMap());
+		counter += locState.territoryAdder();
+		counter += locState.continentAdder(board.getGameMap());
 		return counter;
 	}
 	
+	public boolean isOwner(int countryId, int ownerId){
+		return locState.isOwner(countryId, ownerId);
+	}
+	
+	public boolean isAdjacent(int countryFrom, int countryTo){
+		return board.territoryIsAdjacent(countryFrom, countryTo);
+	}
 	/**
 	 * if adding armies fails, returns false, otherwise true and adds
 	 * armies to pool
 	 * 
 	 * @param cards
-	 * @param gameState
 	 * @param playerId
 	 * @return
 	 */
-	private boolean addArmiesFromCards(Card[] cards, GameState gameState, int playerId){
-		int counter = getArmiesFromCards(cards,gameState,playerId);
+	private boolean addArmiesFromCards(Card[] cards, int playerId){
+		int counter = getArmiesFromCards(cards,playerId);
 		if(counter==-1)
 			return false;
 		else
@@ -224,12 +257,11 @@ public class Model_Controller {
 	 * trade cards.
 	 * 
 	 * @param cards
-	 * @param gameState
 	 * @param playerId
 	 * @return
 	 */
-	private int getArmiesFromCards(Card[] cards, GameState gameState,int playerId){
-		if(gameState.tradeCards(cards, playerId)){
+	private int getArmiesFromCards(Card[] cards, int playerId){
+		if(locState.tradeCards(cards, playerId)){
 			return board.getArmiesFromCardTurnIn();
 		}
 		else
@@ -237,9 +269,21 @@ public class Model_Controller {
 
 	}
 	
+	public boolean forceCardTurnInCheck(){
+		return getNumberOfCards() >= 5;
+	}
+	
+	private void transferCards(int fromPlayerId, int toPlayerId){
+		locState.transferCards(fromPlayerId,toPlayerId);
+	}
+	
+	private int getNumberOfCards(){
+		return locState.getPlayers()[locState.getPlayer_turn()].getHand().size();
+	}
+	
 	public Model_Controller()
 	{
 		gson = new Gson();
-	}
+	};
 	
 }

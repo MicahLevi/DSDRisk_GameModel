@@ -24,4 +24,14 @@ public class Player {
 	public ArrayList<Card> getHand() {
 		return hand;
 	}
+	
+	public ArrayList<Card> conquerHand() {
+		 ArrayList<Card> locHand = hand;
+		 hand = null;
+		 return locHand;
+	}
+	
+	public void addAllCards(ArrayList<Card> cardList){
+		hand.addAll(cardList);
+	}
 }
