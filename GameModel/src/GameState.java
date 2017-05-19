@@ -173,6 +173,8 @@ public class GameState {
 		{
 			for(Card c: cards){
 				players[playerId].removeCard(c);
+				if(isOwner(c.getTerritory(),playerId))
+					army_distribution.get(c.getTerritory()).num_armies+=2;
 			}
 			return true;
 		}

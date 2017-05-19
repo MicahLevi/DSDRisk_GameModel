@@ -122,7 +122,8 @@ public class Model_Controller {
 	 * In the event any of the commands return something, its output will be printed to
 	 * the system output stream (console by default).
 	 */
-	public GameState update_debug(GameState currState, String[][] commands){
+	/* 
+	 * public GameState update_debug(GameState currState, String[][] commands){
 	    // TODO: finish debugging command interpreter
 	    for (int i = 0; i < commands.length; i++){
 	        switch (commands[i][0]){
@@ -184,8 +185,11 @@ public class Model_Controller {
 	    }
 	    return currState;
     }
-
+    
+    
+*/
     // TODO: Add comments
+	
 	public int[][] attackCountry(int attack_id, int defend_id, int num_units) throws Exception{
 		try {
 			if (board.territoryIsAdjacent(attack_id, defend_id))
