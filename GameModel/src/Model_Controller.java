@@ -1,8 +1,7 @@
-import java.util.Map;
-import java.util.Arrays;
-import java.util.Collection;
-
 import com.google.gson.Gson;
+
+import GameState.Army;
+import src.riskGUI.RiskGUI;
 
 public class Model_Controller {
 	
@@ -10,6 +9,7 @@ public class Model_Controller {
 	private Gson gson;
 	private GameState locState;
 	private int self;
+	private RiskGUI gui;
 	/**
 	 * Have GameSetup already create the board and pass it in
 	 * 
@@ -27,26 +27,32 @@ public class Model_Controller {
 	 * @param aMap
 	 * @param rules
 	 */
-	public void initGame(GameMap aMap,Rule[] rules, Player[] players, int me)
+	public void initGame(String mapFile, String mapImg, Rule[] rules, Player[] players, int me)
 	{
 		board = new Board(0,aMap,rules, players);
 		self = me;
+		gui = new RiskGUI();
+		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
 	}
 	
+	
+	
+	//FIXME: This version is probably worthless unless we find another way to pass rules
 	/**
 	 * init without rules from GameSetup. create own rules array
 	 * 
 	 * @param aMap
 	 * @param players
 	 */
-	public void initGame(GameMap aMap, Player[] players,int me)
+	public void initGame(String mapFile, String mapImg, Player[] players,int me)
 	{
 		Rule[] rules = new Rule[10];
 		rules[0] = new Rule(0,0,players); //initialize the rules ourselves given parameters
 		board = new Board(0,aMap,rules, players);
 		self = me;
+		gui = new RiskGUI();
+		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
 	}
-	
 	/**
 	 * function that handles updating the GameState
 	 * Takes in an object. 
@@ -65,6 +71,8 @@ public class Model_Controller {
 			locPkg = (SetupPackage)pkg;
 		board = new Board(0,locPkg.map,locPkg.rules,locPkg.players);
 		self = me;
+		gui = new RiskGUI();
+		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
 	}
 	
 	public GameState playTurn(Object currState)
@@ -78,9 +86,64 @@ public class Model_Controller {
 		if(locState.getPlayer_turn()!=self)
 		{
 			//updateGui;
+			gui.notTurn();
 			return locState;
 		}
 		setInitialArmies();
+		gui.updateTerritories(locState.getArmy_distribution());
+
+		int phase = locState.getGame_phase();
+		while (phase != 6) {
+			switch (phase) {
+				case 1: // Territory Select
+					int claimed = gui.pickInitCntrys();
+					locState.addArmy(claimed, 1);
+					if (locState.allTerritoriesClaimed())
+						locState.incrementGamePhase();
+				case 2: // Territory Placement
+					int numArmies = 35 - (locState.getPlayers().length-3)*5;
+					gui.placingArmies(numArmies);
+					//FIXME: How does the gui return the army distribution?
+				case 3: // Deploy
+					//FIXME: Where did we store the players hands?
+					Card[] hand = locState.getHand(self);
+					gui.showCards(hand);
+					
+					//FIXME: need to get the cards they select
+					
+					int num_units = locState.tradeCards(cards, self);
+					
+					//FIXME: Do we use placingArmies again?
+					gui.placingArmies(num_units);
+					
+					//FIXME: How do we know when to end the deploy phase?
+					locState.incrementGamePhase();
+				case 4: // Attack
+					//FIXME: I think these should return an int for the selected territory?
+					int atkId = gui.pickAttacker();
+					int defId = gui.pickDefender();
+					gui.confirmAnnihilate(locState.getTerritory(atkId).name, locState.getTerritory(defId).name);
+					
+					
+					int[][] roll = locState.attackCountry(atkId, defId, locState.getTerritory(atkId).num_units - 1);
+					//FIXME: Probably easier to pass the rolls as int[][]
+					gui.showRoll(roll);
+					
+					//FIXME: How do we know when they end attack phase?
+					locState.incrementGamePhase();
+				case 5: // Fortify
+					//FIXME: Need to return an int for the src and dest
+					int src = gui.setFortSrc();
+					int dest = gui.setFortDest();
+					
+					gui.fortifyNum(locState.getTerritory(src).name, locState.getTerritory(dest).name);
+					
+					
+				default:
+					throw new Exception("Gamestate had invalid game phase: " +phase);
+			}
+		}
+		gui.notTurn();
 		////////////////////////
 		//gui controller here
 		////////////////////////
