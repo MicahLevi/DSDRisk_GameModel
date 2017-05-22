@@ -83,16 +83,16 @@ public class Model_Controller {
 			System.out.println("error parsing object");
 			return null;
 		}
-		if(locState.getPlayer_turn()!=self)
+		if(locState.getturnToken()!=self)
 		{
 			//updateGui;
 			gui.notTurn();
 			return locState;
 		}
 		setInitialArmies();
-		gui.updateTerritories(locState.getArmy_distribution());
+		gui.updateTerritories(locState.getmap());
 
-		int phase = locState.getGame_phase();
+		int phase = locState.getturnToken();
 		while (phase != 6) {
 			switch (phase) {
 				case 1: // Territory Select
@@ -122,10 +122,10 @@ public class Model_Controller {
 					//FIXME: I think these should return an int for the selected territory?
 					int atkId = gui.pickAttacker();
 					int defId = gui.pickDefender();
-					gui.confirmAnnihilate(locState.getTerritory(atkId).name, locState.getTerritory(defId).name);
+					gui.confirmAnnihilate(locState.getmap()[atkId].country_id, locState.getmap()[defId].country_id);
 					
 					
-					int[][] roll = locState.attackCountry(atkId, defId, locState.getTerritory(atkId).num_units - 1);
+					int[][] roll = locState.attackCountry(atkId, defId, locState.getmap()[atkId].num_armies - 1);
 					//FIXME: Probably easier to pass the rolls as int[][]
 					gui.showRoll(roll);
 					
@@ -136,7 +136,7 @@ public class Model_Controller {
 					int src = gui.setFortSrc();
 					int dest = gui.setFortDest();
 					
-					gui.fortifyNum(locState.getTerritory(src).name, locState.getTerritory(dest).name);
+					gui.fortifyNum(locState.getmap()[src].country_id, locState.getmap()[dest].country_id);
 					
 					
 				default:
@@ -347,7 +347,7 @@ public class Model_Controller {
 	}
 	
 	private int getNumberOfCards(){
-		return locState.getPlayers()[locState.getPlayer_turn()].getHand().size();
+		return locState.getPlayers()[locState.getturnToken()].getHand().size();
 	}
 	
 	public Model_Controller()

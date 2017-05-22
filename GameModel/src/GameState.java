@@ -6,26 +6,12 @@ import java.util.Map;
 
 public class GameState {
 	
-	private Map<Integer, Army> 	army_distribution; //this should be int if we are passing ints in
+	private Army[]				map; //this should be int if we are passing ints in
 	private Player[] 			players;
-	private long 				game_id;
-	private int 				player_turn;
-	private int 				game_phase;
-	private int 				winner;
+	private int 				turnToken;
+	private int 				gamePhase;
 	private Card[] 				deck;
 	
-	public class Army {
-		public int owner_id;
-		public int num_armies;
-		public Army() {
-			owner_id = 0;
-			num_armies = 0;
-		}
-		public Army(int player_id, int armies) {
-			owner_id   = player_id;
-			num_armies = armies;
-		}
-	}
 	public GameState(){
 		
 	}
@@ -34,21 +20,19 @@ public class GameState {
 	}
 	
 	public void addArmy(int country_id, int num_units) {
-		Army locArmy = army_distribution.get(country_id);
-		locArmy.num_armies += num_units;
-		army_distribution.replace(country_id, locArmy);
+		map[country_id].num_armies+=num_units;
 	}
 	
 	public boolean isOwner(int countryId, int ownerId)
 	{
-		if(army_distribution.get(countryId).owner_id==ownerId)
+		if(map[countryId].owner_id==ownerId)
 			return true;
 		return false;
 	}
 	
 	public int getOwner(int countryId)
 	{
-		return army_distribution.get(countryId).owner_id;
+		return map[countryId].owner_id;
 	}
 	/**
 	 * allows one player to attack another with a given number of units
@@ -59,8 +43,8 @@ public class GameState {
 	 */
 	public int[][] attackCountry(int attack_id, int defend_id, int num_units) throws Exception
 	{
-		Army attack = army_distribution.get(attack_id);
-		Army defend = army_distribution.get(defend_id);
+		Army attack = map[attack_id];
+		Army defend = map[defend_id];
 		int[] atk_dice = new int[0];
 		int[] def_dice = new int[0];
 		if (attack.owner_id == defend.owner_id)
@@ -128,8 +112,8 @@ public class GameState {
 			defend.owner_id = attack.owner_id;
 		}
 		
-		army_distribution.replace(attack_id, attack);
-		army_distribution.replace(defend_id, defend);
+		map[attack_id] = attack;
+		map[defend_id] = defend;
 		return new int[][]{atk_dice, def_dice};
 	}
 	
@@ -144,8 +128,8 @@ public class GameState {
 	 * -2 = too many units requested to move
 	 */
 	public int fortifyCountry(int from_id, int to_id, int num_units) {
-		Army fromArmy = army_distribution.get(from_id);
-		Army toArmy = army_distribution.get(from_id);
+		Army fromArmy = map[from_id];
+		Army toArmy = map[from_id];
 		if(fromArmy.owner_id == toArmy.owner_id)
 		{
 			if((fromArmy.num_armies-num_units)<1)
@@ -154,8 +138,8 @@ public class GameState {
 			{
 				fromArmy.num_armies -= num_units;
 				toArmy.num_armies += num_units;
-				army_distribution.replace(from_id, fromArmy);
-				army_distribution.replace(to_id, toArmy);
+				map[from_id] = fromArmy;
+				map[to_id]= toArmy;
 				return 1;
 			}
 		}
@@ -174,7 +158,7 @@ public class GameState {
 			for(Card c: cards){
 				players[playerId].removeCard(c);
 				if(isOwner(c.getTerritory(),playerId))
-					army_distribution.get(c.getTerritory()).num_armies+=2;
+					map[c.getTerritory()].num_armies+=2;
 			}
 			return true;
 		}
@@ -188,9 +172,7 @@ public class GameState {
 	 */
 	public int winCheck() {
 		int owner = -1;
-		Collection<Army> armies = army_distribution.values();
-		Army[] arr = (Army[]) armies.toArray();
-		for(Army army: arr) {
+		for(Army army: map) {
 			if(owner == -1)
 				owner = army.owner_id;
 			else
@@ -199,7 +181,6 @@ public class GameState {
 					return -1;
 			}
 		}
-		winner = owner;
 		return owner;
 	}
 	/**
@@ -237,7 +218,7 @@ public class GameState {
 		{
 			for(Territory t: c.territories)
 			{
-				if(army_distribution.get(t.id).owner_id!=player_turn){
+				if(map[t.id].owner_id!=turnToken){
 					innerCheck = false;
 					break;
 				}
@@ -254,11 +235,10 @@ public class GameState {
 	 */
 	public int territoryAdder()
 	{
-		Collection<Army> territories = army_distribution.values();
 		int counter = 0;
-		for(Army a: territories)
+		for(Army a: map)
 		{
-			if(a.owner_id==player_turn)
+			if(a.owner_id==turnToken)
 				counter++;
 		}
 		counter/=3;
@@ -267,7 +247,7 @@ public class GameState {
 		return counter;
 	}
 	public void incrementGamePhase(){
-		game_phase++;
+		gamePhase++;
 	}
 	
 	public boolean isPlayerConquered(int playerId){
@@ -275,7 +255,7 @@ public class GameState {
 	}
 	
 	private boolean ownsLand(int playerId){
-		for(Army a: army_distribution.values())
+		for(Army a: map)
 		{
 			if(a.owner_id==playerId)
 				return true;
@@ -289,11 +269,11 @@ public class GameState {
 	
 	
 	// TODO: Clean getters and setters
-	public Map<Integer, Army> getArmy_distribution() {
-		return army_distribution;
+	public Army[] getmap() {
+		return map;
 	}
-	public void setArmy_distribution(Map<Integer, Army> army_distribution) {
-		this.army_distribution = army_distribution;
+	public void setmap(Army[] map) {
+		this.map = map;
 	}
 	public Player[] getPlayers() {
 		return players;
@@ -301,29 +281,17 @@ public class GameState {
 	public void setPlayers(Player[] players) {
 		this.players = players;
 	}
-	public long getGame_id() {
-		return game_id;
+	public int getturnToken() {
+		return turnToken;
 	}
-	public void setGame_id(long game_id) {
-		this.game_id = game_id;
+	public void setturnToken(int turnToken) {
+		this.turnToken = turnToken;
 	}
-	public int getPlayer_turn() {
-		return player_turn;
+	public int getgamePhase() {
+		return gamePhase;
 	}
-	public void setPlayer_turn(int player_turn) {
-		this.player_turn = player_turn;
-	}
-	public int getGame_phase() {
-		return game_phase;
-	}
-	public void setGame_phase(int game_phase) {
-		this.game_phase = game_phase;
-	}
-	public int getWinner() {
-		return winner;
-	}
-	public void setWinner(int winner) {
-		this.winner = winner;
+	public void setgamePhase(int gamePhase) {
+		this.gamePhase = gamePhase;
 	}
 	public Card[] getDeck() {
 		return deck;
