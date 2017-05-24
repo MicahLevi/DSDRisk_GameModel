@@ -1,8 +1,4 @@
 import com.google.gson.Gson;
-
-import GameState.Army;
-import src.riskGUI.RiskGUI;
-
 public class Model_Controller {
 	
 	private Board board;
@@ -29,7 +25,7 @@ public class Model_Controller {
 	 */
 	public void initGame(String mapFile, String mapImg, Rule[] rules, Player[] players, int me)
 	{
-		board = new Board(0,aMap,rules, players);
+		board = new Board(0,mapFile,rules, players);
 		self = me;
 		gui = new GUIRiskGame();
 		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
@@ -48,7 +44,7 @@ public class Model_Controller {
 	{
 		Rule[] rules = new Rule[10];
 		rules[0] = new Rule(0,0,players); //initialize the rules ourselves given parameters
-		board = new Board(0,aMap,rules, players);
+		board = new Board(0,mapFile,rules, players);
 		self = me;
 		gui = new GUIRiskGame();
 		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
@@ -69,13 +65,13 @@ public class Model_Controller {
 			locPkg = gson.fromJson((String) pkg, SetupPackage.class);
 		else
 			locPkg = (SetupPackage)pkg;
-		board = new Board(0,locPkg.map,locPkg.rules,locPkg.players);
+		board = new Board(0,null,locPkg.rules,locPkg.players);
 		self = me;
 		gui = new GUIRiskGame();
-		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
+		//gui.spawnGame(null, mapImg, String.valueOf(players.length));
 	}
 	
-	public GameState playTurn(Object currState)
+	/*public GameState playTurn(Object currState)
 	{
 		locState = (GameState) parseObj(currState,GameState.class);
 		if(locState==null)
@@ -149,7 +145,7 @@ public class Model_Controller {
 		////////////////////////
 		return locState;
 	}
-	
+	*/
 	private void setInitialArmies() {
 		board.addArmyPool(getTurnStartArmies());
 	}

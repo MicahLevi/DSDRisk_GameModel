@@ -1,5 +1,3 @@
-package riskGUI;
-
 public class GUICard {
 	private int cardID;//will be used for image name etc
 	private int type;//there are four types man, horse, cannon, wild

@@ -43,8 +43,8 @@ public class GameState {
 	 */
 	public int[][] attackCountry(int attack_id, int defend_id, int num_units) throws Exception
 	{
-		Army attack = map[attack_id];
-		Army defend = map[defend_id];
+		TerritoryInfo attack = map[attack_id];
+		TerritoryInfo defend = map[defend_id];
 		int[] atk_dice = new int[0];
 		int[] def_dice = new int[0];
 		if (attack.owner_id == defend.owner_id)
@@ -172,7 +172,7 @@ public class GameState {
 	 */
 	public int winCheck() {
 		int owner = -1;
-		for(Army army: map) {
+		for(TerritoryInfo army: map) {
 			if(owner == -1)
 				owner = army.owner_id;
 			else
@@ -210,9 +210,9 @@ public class GameState {
 	 * @param map
 	 * @return
 	 */
-	public int continentAdder(GameMap map) {
+	public int continentAdder(GameMap aMap) {
 		int counter = 0;
-		Continent[] contList = map.getContinents();
+		Continent[] contList = aMap.getContinents();
 		boolean innerCheck = true;
 		for(Continent c: contList)
 		{

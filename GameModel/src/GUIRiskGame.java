@@ -1,6 +1,3 @@
-
-package riskGUI;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -28,7 +25,7 @@ public class GUIRiskGame extends JPanel{
 	boolean fiveIsClicked = false;
 	int threeCount = 0;
 	//for testing
-	//public Color [] myCols = {Color.red,Color.orange,Color.green,Color.blue,Color.yellow,Color.magenta};
+	public Color [] myCols = {Color.red,Color.orange,Color.green,Color.blue,Color.yellow,Color.magenta};
 
 
 	
@@ -838,7 +835,7 @@ public class GUIRiskGame extends JPanel{
 
 	public void updateMap(TerritoryInfo[] in){
 		for (int i = 0; i < countries.size(); i++) {
-			countries.get(i).setButtonColor(colorArray[in[i].owner_id]);
+			countries.get(i).setButtonColor(myCols[in[i].owner_id]);
 			countries.get(i).setArmies(in[i].num_armies);
 			//countries.get(3).setArmies(testInt);
 			  //clonedCopy.add(obj.clone());

@@ -1,5 +1,3 @@
-package riskGUI;
-
 import java.awt.*;
 import javax.swing.JComponent; 
 

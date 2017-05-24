@@ -1,5 +1,3 @@
-package riskGUI;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -28,8 +26,14 @@ public class GUItest {
 			int randomArmies = ThreadLocalRandom.current().nextInt(0, 21);
 			testCountries.add(new GUICountry(myClrs[randomColor], randomArmies));//use test constructor in GUICountry
 		}
+		TerritoryInfo[] territoryTestInfo = new TerritoryInfo[42];//create a list of trivial countries to test updateMap()
+		for (int i = 0; i < 42; i++){
+			int randomColor = ThreadLocalRandom.current().nextInt(0, 4);
+			int randomArmies = ThreadLocalRandom.current().nextInt(0, 21);
+			territoryTestInfo[i] = new TerritoryInfo(randomColor,randomArmies,i);//use test constructor in GUICountry
+		}
 		
-		myGUI.updateMap(testCountries);
+		myGUI.updateMap(territoryTestInfo);
 
 		//myGUI.pickInitCntrys();
 		//myGUI.placingArmies(5);

@@ -1,3 +1,5 @@
+import java.io.File;
+
 /*Object containing information about the setup.
  * Contains information about number of players,
  * rules, win conditions, and card conditions.
@@ -10,9 +12,9 @@ public class Board {
 	private int cardTurninNumber;
 	private int armyPool;
 	
-	public Board(long gameId, GameMap gameMap, Rule[] gameRules, Player[] gamePlayers) {
+	public Board(long gameId, String mapFile, Rule[] gameRules, Player[] gamePlayers) {
 		id      = gameId;
-		map     = gameMap;
+		map     = null;//new File("mapFile.json");
 		rules   = gameRules;
 		players = gamePlayers;
 		cardTurninNumber = 0;
