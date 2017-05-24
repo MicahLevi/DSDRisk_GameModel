@@ -32,8 +32,33 @@ public class GUItest {
 			int randomArmies = ThreadLocalRandom.current().nextInt(0, 21);
 			territoryTestInfo[i] = new TerritoryInfo(randomColor,randomArmies,i);//use test constructor in GUICountry
 		}
-		
-		myGUI.updateMap(territoryTestInfo);
+		new Thread(myGUI).start();
+		//while(true){
+			synchronized(myGUI){
+				try {
+					//infinite loop. not necessary but shows how this works with checking with responses
+					while(true){
+						System.out.println("waiting...");
+						//wait to receive button input from gui
+						myGUI.wait();
+						System.out.println("response!");
+						//call update map function
+						myGUI.updateMap(territoryTestInfo);
+						System.out.println(myGUI.aGlobalClicked + " was clicked!");
+						//reset button flag back to zero
+						myGUI.aGlobalClicked = -1;
+						System.out.println("pass back!");
+						//notify gui that driver is done handling the information and it is free to run again
+						myGUI.notify();
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	
+			}
+		//}
+
 
 		//myGUI.pickInitCntrys();
 		//myGUI.placingArmies(5);
@@ -44,7 +69,7 @@ public class GUItest {
 		//myGUI.fortifyNum("Western United States","Eastern United States");
 		//myGUI.setFortSrc();
 		//myGUI.setFortDest();
-		myGUI.notTurn();
+		//myGUI.notTurn();
 		/**
 		for (int i = 6; i>=1; i--)
 		{

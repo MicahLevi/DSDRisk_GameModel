@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.util.ArrayList;
 
-public class GUIRiskGame extends JPanel{
+public class GUIRiskGame extends JPanel implements Runnable{
 	//the two following lists will contain countries
 	//and the button which corresponds to the country
 
@@ -25,6 +25,7 @@ public class GUIRiskGame extends JPanel{
 	boolean fiveIsClicked = false;
 	int threeCount = 0;
 	//for testing
+	int aGlobalClicked = -1;
 	public Color [] myCols = {Color.red,Color.orange,Color.green,Color.blue,Color.yellow,Color.magenta};
 
 
@@ -825,7 +826,7 @@ public class GUIRiskGame extends JPanel{
 			public void actionPerformed(ActionEvent e)
 		    {
 				int i = myButtons.indexOf(e.getSource());
-
+				aGlobalClicked = i;
 				System.out.println(name + " clicked");
 			}
 		});
@@ -840,5 +841,38 @@ public class GUIRiskGame extends JPanel{
 			//countries.get(3).setArmies(testInt);
 			  //clonedCopy.add(obj.clone());
 			}
+	}
+
+	//this is the thread function
+	@Override
+	public void run() {
+		//this is what combines the threads. "this refers to it being the child process"
+		synchronized(this){
+			//this is an infinite loop to keep checking for updates
+			while(true){
+				//sleep for a second to slow things down or it breaks
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				//check to see if the global was clicked(something was clicked/flagged)
+				if(aGlobalClicked!=-1){
+					System.out.println("aGlobal: " + aGlobalClicked);
+					//notify the parent that something was clicked
+					notify();
+					System.out.println("waiting inner...");
+					//wait for parent to respond with notify
+					try {
+						wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				//System.out.println("beep..."+aGlobalClicked);
+			}
+		}	
 	}
 }
