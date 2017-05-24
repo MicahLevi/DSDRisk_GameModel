@@ -9,7 +9,7 @@ public class Model_Controller {
 	private Gson gson;
 	private GameState locState;
 	private int self;
-	private RiskGUI gui;
+	private GUIRiskGame gui;
 	/**
 	 * Have GameSetup already create the board and pass it in
 	 * 
@@ -31,7 +31,7 @@ public class Model_Controller {
 	{
 		board = new Board(0,aMap,rules, players);
 		self = me;
-		gui = new RiskGUI();
+		gui = new GUIRiskGame();
 		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
 	}
 	
@@ -50,7 +50,7 @@ public class Model_Controller {
 		rules[0] = new Rule(0,0,players); //initialize the rules ourselves given parameters
 		board = new Board(0,aMap,rules, players);
 		self = me;
-		gui = new RiskGUI();
+		gui = new GUIRiskGame();
 		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
 	}
 	/**
@@ -71,7 +71,7 @@ public class Model_Controller {
 			locPkg = (SetupPackage)pkg;
 		board = new Board(0,locPkg.map,locPkg.rules,locPkg.players);
 		self = me;
-		gui = new RiskGUI();
+		gui = new GUIRiskGame();
 		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
 	}
 	

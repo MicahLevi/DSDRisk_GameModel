@@ -10,11 +10,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.Graphics;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.util.ArrayList;
 
-public class GUIRiskGame extends JPanel{
+public class RiskGUI extends JPanel{
 	//the two following lists will contain countries
 	//and the button which corresponds to the country
 
@@ -27,9 +28,6 @@ public class GUIRiskGame extends JPanel{
 	boolean fourIsClicked = false;
 	boolean fiveIsClicked = false;
 	int threeCount = 0;
-	//for testing
-	//public Color [] myCols = {Color.red,Color.orange,Color.green,Color.blue,Color.yellow,Color.magenta};
-
 
 	
 	public void spawnGame(String mapFile, String mapImg, String numPlayer){
@@ -77,9 +75,11 @@ public class GUIRiskGame extends JPanel{
 			while ((line = bufferedReader.readLine()) != null) {
 				String[] singleLine = line.split("\\s+");
 				JButton but = makeButton(singleLine[0], singleLine[1], singleLine[3], singleLine[4]);
+				//JButton but = makeButton(id, name, x, y);
 				frame.add(but);
 				int intID = Integer.parseInt(singleLine[0]); 
-				GUICountry country = new GUICountry(but, intID);
+				int intContinent = Integer.parseInt(singleLine[2]); 
+				GUICountry country = new GUICountry(singleLine[1], intContinent, but, intID);
 				//there will be a button array which corresponds to the countries
 				countries.add(country);
 				myButtons.add(but);
@@ -210,7 +210,7 @@ public class GUIRiskGame extends JPanel{
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("testD clicked");
-				confirmAnnihilate("Eastern United States","Western United States");
+				confirmAnnihilate("America","Russia");
 			}
 		});
 		defP.add(testD);
@@ -253,16 +253,16 @@ public class GUIRiskGame extends JPanel{
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("testA clicked");
-				fortifyNum("Eastern United States","Western United States");
+				fortifyNum("America","Russia");
 			}
 		});
 		annihilateP.add(testA);
 			
-		JLabel annihilateL = new JLabel(a+" VS "+b, SwingConstants.CENTER);
+		JLabel annihilateL = new JLabel(a+" VS "+b);
 		annihilateL.setForeground(Color.red);
-		annihilateL.setSize(880,100);
-		//annihilateL.setLocation(200,0);
-		annihilateL.setFont(new Font("Serif", Font.ITALIC, 40));
+		annihilateL.setSize(700,100);
+		annihilateL.setLocation(200,0);
+		annihilateL.setFont(new Font("Serif", Font.ITALIC, 50));
 		annihilateP.add(annihilateL);
 		
 		JButton annihilateB2 = new JButton("Annihilate");
@@ -297,11 +297,12 @@ public class GUIRiskGame extends JPanel{
 		moveP.setBackground(Color.lightGray);
 		moveP.setLayout(null);
 		moveP.setBounds(5, 5, 873, 160);
-		JLabel move = new JLabel(src+" to "+dest, SwingConstants.CENTER);
+		
+		JLabel move = new JLabel(src+" to "+dest);
 		move.setForeground(Color.red);
 		move.setSize(800,100);
-		//move.setLocation(10,0);
-		move.setFont(new Font("Serif", Font.ITALIC, 40));
+		move.setLocation(10,0);
+		move.setFont(new Font("Serif", Font.ITALIC, 50));
 		moveP.add(move);
 		
 		JButton testM = new JButton("Test");
@@ -517,13 +518,26 @@ public class GUIRiskGame extends JPanel{
 			}
 		});
 		
-		JLabel attkCntry = new JLabel(a+" -VS- "+d, SwingConstants.CENTER);
+		JLabel attkCntry = new JLabel(a);
 		attkCntry.setForeground(Color.red);
-		attkCntry.setSize(880,50);
-		//attkCntry.setLocation(10,0);
+		attkCntry.setSize(380,50);
+		attkCntry.setLocation(10,0);
 		attkCntry.setFont(new Font("Serif", Font.ITALIC, 40));
 		diceP.add(attkCntry);
-
+		
+		JLabel vs = new JLabel("-VS-");
+		vs.setForeground(Color.red);
+		vs.setSize(80,50);
+		vs.setLocation(395,0);
+		vs.setFont(new Font("Serif", Font.ITALIC, 40));
+		diceP.add(vs);
+		
+		JLabel defCntry = new JLabel(d);
+		defCntry.setForeground(Color.red);
+		defCntry.setSize(400,50);
+		defCntry.setLocation(480,0);
+		defCntry.setFont(new Font("Serif", Font.ITALIC, 40));
+		diceP.add(defCntry);
 			
 		JLabel die1 = new JLabel();
 		die1.setLocation(50, 70);
@@ -833,15 +847,5 @@ public class GUIRiskGame extends JPanel{
 			}
 		});
 		return myButton;
-	}
-
-
-	public void updateMap(TerritoryInfo[] in){
-		for (int i = 0; i < countries.size(); i++) {
-			countries.get(i).setButtonColor(colorArray[in[i].owner_id]);
-			countries.get(i).setArmies(in[i].num_armies);
-			//countries.get(3).setArmies(testInt);
-			  //clonedCopy.add(obj.clone());
-			}
 	}
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class GameState {
 	
-	private Army[]				map; //this should be int if we are passing ints in
+	private TerritoryInfo[]		map; //this should be int if we are passing ints in
 	private Player[] 			players;
 	private int 				turnToken;
 	private int 				gamePhase;
@@ -128,8 +128,8 @@ public class GameState {
 	 * -2 = too many units requested to move
 	 */
 	public int fortifyCountry(int from_id, int to_id, int num_units) {
-		Army fromArmy = map[from_id];
-		Army toArmy = map[from_id];
+		TerritoryInfo fromArmy = map[from_id];
+		TerritoryInfo toArmy = map[from_id];
 		if(fromArmy.owner_id == toArmy.owner_id)
 		{
 			if((fromArmy.num_armies-num_units)<1)
@@ -236,7 +236,7 @@ public class GameState {
 	public int territoryAdder()
 	{
 		int counter = 0;
-		for(Army a: map)
+		for(TerritoryInfo a: map)
 		{
 			if(a.owner_id==turnToken)
 				counter++;
@@ -255,7 +255,7 @@ public class GameState {
 	}
 	
 	private boolean ownsLand(int playerId){
-		for(Army a: map)
+		for(TerritoryInfo a: map)
 		{
 			if(a.owner_id==playerId)
 				return true;
@@ -269,10 +269,10 @@ public class GameState {
 	
 	
 	// TODO: Clean getters and setters
-	public Army[] getmap() {
+	public TerritoryInfo[] getmap() {
 		return map;
 	}
-	public void setmap(Army[] map) {
+	public void setmap(TerritoryInfo[] map) {
 		this.map = map;
 	}
 	public Player[] getPlayers() {
