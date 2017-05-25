@@ -5,13 +5,15 @@ public class Territory {
 		private String  name;
 		private int 	xPos;
 		private int 	yPos;
-		private ArrayList<Territory> borders;
+		public ArrayList<Integer> borderlist;
+		public ArrayList<Territory> borders;
 		
 		public Territory (int territoryId, String territoryName, int xPosition, int yPosition) {
 			id		= territoryId;
 			name    = territoryName;
 			xPos    = xPosition;
 			yPos    = yPosition;
+			borderlist = new ArrayList<Integer>();
 			borders = new ArrayList<Territory>(); 	//we need to make note of this because
 													//in our specs, we say this is a list of
 													//ints, but I like this better	

@@ -1,14 +1,16 @@
+import java.util.ArrayList;
+
 public class Continent {
 		public String name;
 		public String color;
-		public Territory[] territories;
+		public ArrayList<Territory> territories;
 		public int groupVal;  //how many armies you get by controlling this area.
 		
-		public Continent(String continentName, String continentColor, Territory[] continentTerritories) {
-			name		= continentName;
-			color		= continentColor;
-			territories = continentTerritories;
-			groupVal 	= 0;
+		public Continent(String continentName, String numArmies, String continentColor){
+			name = continentName;
+			groupVal = Integer.parseInt(numArmies);
+			color = continentColor;	
+			territories = new ArrayList<Territory>();
 		}
 		
 		/**
