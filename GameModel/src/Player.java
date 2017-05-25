@@ -35,4 +35,8 @@ public class Player {
 	public void addAllCards(ArrayList<Card> cardList){
 		hand.addAll(cardList);
 	}
+	
+	public String getname() {
+		return name;
+	}
 }

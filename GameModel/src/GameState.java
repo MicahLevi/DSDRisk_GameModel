@@ -229,6 +229,16 @@ public class GameState {
 		return counter;
 		
 	}
+	public boolean allClaimed() {
+		for (TerritoryInfo t : map){
+			if (t.owner_id == -1)
+				return false;
+		}
+		return true;
+	}
+	
+	
+	
 	/**
 	 * Does the calculation for how many armies to get based on territory
 	 * @return

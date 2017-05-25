@@ -26,6 +26,13 @@ public class GUIRiskGame extends JPanel implements Runnable{
 	int threeCount = 0;
 	//for testing
 	int aGlobalClicked = -1;
+	//globals
+	int turnPhase = 0;
+	int selectedTerritory = -1;
+	int numUnits = 0;
+	boolean nextPhase = false;
+	
+	
 	public Color [] myCols = {Color.red,Color.orange,Color.green,Color.blue,Color.yellow,Color.magenta};
 
 

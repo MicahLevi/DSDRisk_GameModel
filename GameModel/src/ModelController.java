@@ -1,11 +1,15 @@
 import com.google.gson.Gson;
-public class Model_Controller {
+public class ModelController {
 	
 	private Board board;
 	private Gson gson;
 	private GameState locState;
 	private int self;
 	private GUIRiskGame gui;
+	private int placingArmies;
+	private TerritoryInfo storedTerritory;
+	
+	
 	/**
 	 * Have GameSetup already create the board and pass it in
 	 * 
@@ -28,6 +32,8 @@ public class Model_Controller {
 		board = new Board(0,mapFile,rules, players);
 		self = me;
 		gui = new GUIRiskGame();
+		placingArmies = 35 - (players.length-3)*5;
+		
 		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
 	}
 	
@@ -69,6 +75,100 @@ public class Model_Controller {
 		self = me;
 		gui = new GUIRiskGame();
 		//gui.spawnGame(null, mapImg, String.valueOf(players.length));
+	}
+	
+	
+	public GameState playTurn(Object currState) {
+		locState = (GameState) currState;
+		new Thread(gui).start();
+		//while(true){
+		synchronized(gui){
+			try {
+				//infinite loop. not necessary but shows how this works with checking with responses
+				while(true){
+					System.out.println("waiting...");
+					//wait to receive button input from gui
+					gui.wait();
+					System.out.println("response!");
+					switch (gui.turnPhase) {
+						case 1: // Territory Select
+							gui.pickInitCntrys();
+							locState.addArmy(gui.selectedTerritory, 1);
+							if (locState.allClaimed()) {
+								gui.turnPhase++;
+								locState.incrementGamePhase();
+								gui.selectedTerritory = -1;
+							}
+							break;
+						case 2: // Territory Placement
+							gui.placingArmies(placingArmies);
+							locState.addArmy(gui.selectedTerritory, gui.numUnits);
+							placingArmies -= gui.numUnits;
+							if (placingArmies <= 0) {
+								gui.turnPhase++;
+								locState.incrementGamePhase();
+								gui.selectedTerritory = -1;
+								gui.numUnits = -1;
+							}
+							break;
+						case 3: // Deploy
+							if (placingArmies == -1)
+								placingArmies = getTurnStartArmies();
+							gui.placingArmies(placingArmies);
+							locState.addArmy(gui.selectedTerritory, gui.numUnits);
+							placingArmies -= gui.numUnits;
+							if (placingArmies <= 0) {
+								gui.turnPhase++;
+								gui.selectedTerritory = -1;
+								gui.numUnits = -1;
+							}
+							break;
+						case 4: // Attack
+							if (gui.selectedTerritory == -1) {
+								gui.pickAttacker();
+								storedTerritory = locState.getmap()[gui.selectedTerritory];
+							}
+							else {
+								gui.pickDefender();
+								TerritoryInfo def = locState.getmap()[gui.selectedTerritory];
+								int[][] dice = attackCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies/2);
+								gui.showRoll(locState.getPlayers()[self].getname(),
+											locState.getPlayers()[def.owner_id].getname(),
+											dice[0][0], dice[0][1], dice[0][2],
+											dice[1][0], dice[1][1]);
+								gui.selectedTerritory = -1;
+								if (gui.nextPhase)
+									gui.turnPhase++;
+							}
+							break;
+						case 5: // Fortify
+							if (gui.selectedTerritory == -1) {
+								gui.setFortSrc();
+								storedTerritory = locState.getmap()[gui.selectedTerritory];
+							}
+							else {
+								gui.setFortDest();
+								fortifyCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies/2);
+								gui.selectedTerritory = -1;
+								if (gui.nextPhase)
+									locState.incrementGamePhase();
+							}
+							break;
+					}
+					System.out.println("Ending Turn");
+					gui.notTurn();
+					gui.notify();
+				}
+			/*} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();*/
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		return (GameState) currState;
 	}
 	
 	/*public GameState playTurn(Object currState)
@@ -346,7 +446,7 @@ public class Model_Controller {
 		return locState.getPlayers()[locState.getturnToken()].getHand().size();
 	}
 	
-	public Model_Controller()
+	public ModelController(String mapFile, String mapImg, Player[] players, int i)
 	{
 		gson = new Gson();
 	};
