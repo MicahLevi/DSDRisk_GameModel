@@ -1,4 +1,11 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 public class ModelController {
 	
 	private Board board;
@@ -11,6 +18,9 @@ public class ModelController {
 	
 	private boolean attackerSelected = false;
 	
+	public ModelController(){
+		gson = new Gson();
+	}
 	
 	/**
 	 * Have GameSetup already create the board and pass it in
@@ -37,6 +47,7 @@ public class ModelController {
 		placingArmies = 35 - (players.length-3)*5;
 		
 		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
+		locState = new GameState(board.getGameMap(),players);
 	}
 	
 	
@@ -48,14 +59,15 @@ public class ModelController {
 	 * @param aMap
 	 * @param players
 	 */
-	public void initGame(String mapFile, String mapImg, Player[] players,int me)
+	public void initGame(String mapFileGui,String mapFileBoard, String mapImg, Player[] players,int me)
 	{
 		Rule[] rules = new Rule[10];
 		rules[0] = new Rule(0,0,players); //initialize the rules ourselves given parameters
-		board = new Board(0,mapFile,rules, players);
 		self = me;
 		gui = new GUIRiskGame();
-		gui.spawnGame(mapFile, mapImg, String.valueOf(players.length));
+		gui.spawnGame(mapFileGui, mapImg, String.valueOf(players.length));
+		board = new Board(0,mapFileBoard,rules, players);
+		locState = new GameState(board.getGameMap(),players);
 	}
 	/**
 	 * function that handles updating the GameState
@@ -82,7 +94,12 @@ public class ModelController {
 	
 	public GameState playTurn(Object currState) {
 		//TODO: get currstate properly through json functions
-		locState = (GameState) currState;
+		locState = (GameState) parseObj(currState,GameState.class);
+		if(locState==null)
+		{
+			System.out.println("failed to get state");
+			return null;
+		}
 		new Thread(gui).start();
 		synchronized(gui){
 			try {
@@ -113,9 +130,14 @@ public class ModelController {
 							if (locState.allClaimed()) {
 								gui.turnPhase++;				//why does gui have a turnPhase object?
 								locState.incrementGamePhase();	//this makes sense
+								break;
 							}
 							//added army to board. now end turn
-							break;
+							System.out.println("Ending Turn");
+							gui.notTurn();
+							gui.selectedTerritory = -1;
+							gui.notify();
+							return locState;
 						case 2: // Territory Placement
 							gui.placingArmies(placingArmies);
 							
@@ -136,10 +158,16 @@ public class ModelController {
 								gui.turnPhase++;	//??
 								//locState.incrementGamePhase();
 								//set gamePhase to be end of turn
-								locState.setgamePhase(6);
+								locState.setgamePhase(3);
 								gui.numUnits = -1;
+								break;
 							}
-							break;
+							
+							//end turn without updating gamePhase for others
+							gui.notTurn();
+							gui.selectedTerritory = -1;
+							gui.notify();
+							return locState;
 						case 3: // Deploy
 							//initialize how many armies the player gets at the start of their turn
 							if (board.getArmyPool() == 0)
@@ -229,6 +257,8 @@ public class ModelController {
 							gui.notTurn();
 							locState.setgamePhase(3);//set to deploy
 							gui.selectedTerritory = -1;//set control for gui back to -1
+							System.out.println("passing control back to gui");
+							gui.notify();
 							return locState;
 					}
 					gui.selectedTerritory = -1;
@@ -244,7 +274,7 @@ public class ModelController {
 			}
 
 		}
-		return (GameState) currState;
+		return locState;
 	}
 	
 	/*public GameState playTurn(Object currState)
@@ -530,9 +560,21 @@ public class ModelController {
 		return locState.getPlayers()[locState.getturnToken()].getHand().size();
 	}
 	
-	public ModelController(String mapFile, String mapImg, Player[] players, int i)
-	{
-		gson = new Gson();
-	};
+	public void saveObjToFile(String fileName, Object obj) throws IOException{
+		BufferedWriter bf = new BufferedWriter(new FileWriter(fileName));
+		JsonParser parser = new JsonParser();
+		Gson aGson = new GsonBuilder().setPrettyPrinting().create();
+		String json = aGson.toJson(obj);
+		JsonElement el = parser.parse(json);
+		String jsonPretty = aGson.toJson(el);
+		bf.write(jsonPretty);
+		bf.close();
+	}
+	public Board getBoard(){
+		return board;
+	}
+	public GameState getGameState(){
+		return locState;
+	}
 	
 }

@@ -1,4 +1,7 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /*Object containing information about the setup.
  * Contains information about number of players,
@@ -12,9 +15,20 @@ public class Board {
 	private int cardTurninNumber;
 	private int armyPool;
 	
-	public Board(long gameId, String mapFile, Rule[] gameRules, Player[] gamePlayers) {
-		id      = gameId;
-		map     = null;//new File("mapFile.json");
+	public Board(long gameId, String mapName, Rule[] gameRules, Player[] gamePlayers) {
+		id = gameId;
+		
+		try {
+			map = new GameMap(mapName);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			map = null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			map = null;
+		}
 		rules   = gameRules;
 		players = gamePlayers;
 		cardTurninNumber = 0;
@@ -78,13 +92,14 @@ public class Board {
 	 */
 	public void setTestInitArmyPool(){
 		int pool = 0;
-		for(Continent c: map.getContinents())
+		for(Continent c: map.getConts())
 			pool += c.territories.size();
 		pool*=3;
 		pool/=players.length;
 		armyPool = pool;
 		
 	}
+
 }
 
 //enum Rule_Name {RULE1, RULE2, RULE3} removed

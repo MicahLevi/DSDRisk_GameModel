@@ -15,8 +15,12 @@ public class GameState {
 	public GameState(){
 		
 	}
-	public GameState(long id, Player[] playerArray) {
-		
+	public GameState(GameMap aMap, Player[] playerArray) {
+		map = aMap.convertToTerritoryInfoArray();
+		players = playerArray; 
+		turnToken = 0;
+		gamePhase = 0;
+		deck = null;
 	}
 	
 	public void addArmy(int country_id, int num_units) {
@@ -212,7 +216,7 @@ public class GameState {
 	 */
 	public int continentAdder(GameMap aMap) {
 		int counter = 0;
-		Continent[] contList = aMap.getContinents();
+		Continent[] contList = aMap.getConts().toArray(new Continent[aMap.getConts().size()]);
 		boolean innerCheck = true;
 		for(Continent c: contList)
 		{

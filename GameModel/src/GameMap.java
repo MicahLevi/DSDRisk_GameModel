@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class GameMap {
 	private String 		name;
-	private Continent[] continents;
+	//private Continent[] continents;
 	private ArrayList<Continent> conts;
 	
 	public Territory getTerritory(int id) {
@@ -23,15 +23,16 @@ public class GameMap {
 
 	public boolean isAdjacent(int ter1_id, int ter2_id) {
 		Territory t = getTerritory(ter1_id);
-		ArrayList<Territory> b = t.getBorders();
-		for (int i=0; i<b.size(); i++) {
-			if (b.get(i).id == ter2_id)
+		for (int i:t.borderlist) {
+			if (i == ter2_id)
 				return true;
 		}
 		return false;
 	}
 	
-	
+	public ArrayList<Continent> getConts(){
+		return conts;
+	}
 	public Territory getTerritoryID(ArrayList<Continent> continentsList, int id){
 		Territory returnTerritory;
 		int i, j, k;
@@ -46,15 +47,12 @@ public class GameMap {
 		return null;
 	}
 	
-	public Continent[] getContinents(){
-		return continents;
-	}
 	
 	public GameMap(String mapname) throws FileNotFoundException, IOException{
 		name = mapname;
 		conts = new ArrayList<Continent>();
 		int i, j, k;
-		String path = "maps/" + mapname + ".map";
+		String path = mapname;//"maps/" + mapname + ".map";
 		String line = "";
 		int mode = 0;
 		try(BufferedReader br = new BufferedReader(new FileReader(path))){
@@ -132,13 +130,24 @@ public class GameMap {
 			for(j = 0; j < conts.get(i).territories.size(); j++){
 				for(k = 0; k < conts.get(i).territories.get(j).borderlist.size();k++){
 					tempTerritory = getTerritoryID(conts, conts.get(i).territories.get(j).borderlist.get(k));
-					conts.get(i).territories.get(j).borders.add(tempTerritory);
+					//conts.get(i).territories.get(j).borders.add(tempTerritory);
 				}
 			}
 		}
 
 			
 		
+	}
+
+
+	public TerritoryInfo[] convertToTerritoryInfoArray() {
+		ArrayList<TerritoryInfo> retList = new ArrayList<TerritoryInfo>();
+		for(Continent c: conts){
+			for(Territory t: c.territories){
+				retList.add(new TerritoryInfo(-1,0,t.id));
+			}
+		}
+		return retList.toArray(new TerritoryInfo[retList.size()]);
 	}
 	
 }

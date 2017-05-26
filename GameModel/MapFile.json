@@ -1,0 +1,527 @@
+{
+  "name": "maps/ameroki.map",
+  "conts": [
+    {
+      "name": "azio",
+      "color": "#9aff80",
+      "territories": [
+        {
+          "id": 1,
+          "name": "siberia",
+          "xPos": 329,
+          "yPos": 152,
+          "borderlist": [
+            20,
+            32,
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "name": "worrick",
+          "xPos": 308,
+          "yPos": 199,
+          "borderlist": [
+            1,
+            10,
+            35,
+            3
+          ]
+        },
+        {
+          "id": 3,
+          "name": "yazteck",
+          "xPos": 284,
+          "yPos": 260,
+          "borderlist": [
+            2,
+            4,
+            6,
+            35
+          ]
+        },
+        {
+          "id": 4,
+          "name": "kongrolo",
+          "xPos": 278,
+          "yPos": 295,
+          "borderlist": [
+            3,
+            35,
+            5,
+            6
+          ]
+        },
+        {
+          "id": 5,
+          "name": "china",
+          "xPos": 311,
+          "yPos": 350,
+          "borderlist": [
+            4,
+            6,
+            42,
+            7,
+            9
+          ]
+        },
+        {
+          "id": 6,
+          "name": "middle_east",
+          "xPos": 339,
+          "yPos": 299,
+          "borderlist": [
+            3,
+            5,
+            9,
+            4
+          ]
+        },
+        {
+          "id": 7,
+          "name": "sluci",
+          "xPos": 358,
+          "yPos": 376,
+          "borderlist": [
+            5,
+            9,
+            8
+          ]
+        },
+        {
+          "id": 8,
+          "name": "afganistan",
+          "xPos": 400,
+          "yPos": 350,
+          "borderlist": [
+            9,
+            7
+          ]
+        },
+        {
+          "id": 9,
+          "name": "kancheria",
+          "xPos": 388,
+          "yPos": 313,
+          "borderlist": [
+            5,
+            8,
+            7,
+            6,
+            10
+          ]
+        },
+        {
+          "id": 10,
+          "name": "india",
+          "xPos": 405,
+          "yPos": 229,
+          "borderlist": [
+            11,
+            2,
+            9
+          ]
+        },
+        {
+          "id": 11,
+          "name": "japan",
+          "xPos": 462,
+          "yPos": 236,
+          "borderlist": [
+            17,
+            10
+          ]
+        },
+        {
+          "id": 42,
+          "name": "heal",
+          "xPos": 271,
+          "yPos": 397,
+          "borderlist": [
+            5,
+            40
+          ]
+        }
+      ],
+      "groupVal": 5
+    },
+    {
+      "name": "ameroki",
+      "color": "yellow",
+      "territories": [
+        {
+          "id": 33,
+          "name": "teramar",
+          "xPos": 103,
+          "yPos": 249,
+          "borderlist": [
+            34,
+            36
+          ]
+        },
+        {
+          "id": 34,
+          "name": "western_united_states",
+          "xPos": 164,
+          "yPos": 235,
+          "borderlist": [
+            38,
+            35,
+            33,
+            36,
+            37,
+            31,
+            32
+          ]
+        },
+        {
+          "id": 35,
+          "name": "czeck",
+          "xPos": 222,
+          "yPos": 257,
+          "borderlist": [
+            2,
+            4,
+            38,
+            34,
+            3
+          ]
+        },
+        {
+          "id": 36,
+          "name": "alberta",
+          "xPos": 122,
+          "yPos": 295,
+          "borderlist": [
+            34,
+            37,
+            41,
+            33,
+            39
+          ]
+        },
+        {
+          "id": 37,
+          "name": "central_ameroki",
+          "xPos": 182,
+          "yPos": 329,
+          "borderlist": [
+            40,
+            38,
+            34,
+            36,
+            39
+          ]
+        },
+        {
+          "id": 38,
+          "name": "albania",
+          "xPos": 205,
+          "yPos": 305,
+          "borderlist": [
+            40,
+            35,
+            34,
+            37
+          ]
+        },
+        {
+          "id": 39,
+          "name": "duiestie",
+          "xPos": 164,
+          "yPos": 355,
+          "borderlist": [
+            40,
+            37,
+            41,
+            36
+          ]
+        },
+        {
+          "id": 40,
+          "name": "Quebeck",
+          "xPos": 203,
+          "yPos": 366,
+          "borderlist": [
+            42,
+            39,
+            37,
+            38
+          ]
+        },
+        {
+          "id": 41,
+          "name": "vinenlant",
+          "xPos": 128,
+          "yPos": 373,
+          "borderlist": [
+            36,
+            39
+          ]
+        }
+      ],
+      "groupVal": 10
+    },
+    {
+      "name": "utropa",
+      "color": "#a980ff",
+      "territories": [
+        {
+          "id": 26,
+          "name": "ireland",
+          "xPos": 128,
+          "yPos": 127,
+          "borderlist": [
+            27,
+            31
+          ]
+        },
+        {
+          "id": 27,
+          "name": "ihesia",
+          "xPos": 130,
+          "yPos": 96,
+          "borderlist": [
+            26,
+            28,
+            21,
+            31
+          ]
+        },
+        {
+          "id": 28,
+          "name": "western_utropa",
+          "xPos": 181,
+          "yPos": 112,
+          "borderlist": [
+            27,
+            31,
+            29,
+            32,
+            30
+          ]
+        },
+        {
+          "id": 29,
+          "name": "souther_utropa",
+          "xPos": 235,
+          "yPos": 133,
+          "borderlist": [
+            28,
+            32,
+            30
+          ]
+        },
+        {
+          "id": 30,
+          "name": "northern_utropa",
+          "xPos": 253,
+          "yPos": 82,
+          "borderlist": [
+            28,
+            25,
+            29
+          ]
+        },
+        {
+          "id": 31,
+          "name": "senadlavin",
+          "xPos": 177,
+          "yPos": 155,
+          "borderlist": [
+            28,
+            34,
+            32,
+            26,
+            27
+          ]
+        },
+        {
+          "id": 32,
+          "name": "great_britain",
+          "xPos": 244,
+          "yPos": 168,
+          "borderlist": [
+            28,
+            1,
+            34,
+            29,
+            31
+          ]
+        }
+      ],
+      "groupVal": 10
+    },
+    {
+      "name": "amerpoll",
+      "color": "red",
+      "territories": [
+        {
+          "id": 22,
+          "name": "pero",
+          "xPos": 374,
+          "yPos": 25,
+          "borderlist": [
+            24,
+            23
+          ]
+        },
+        {
+          "id": 23,
+          "name": "heaurt",
+          "xPos": 428,
+          "yPos": 32,
+          "borderlist": [
+            22,
+            24,
+            20
+          ]
+        },
+        {
+          "id": 24,
+          "name": "vagnagale",
+          "xPos": 327,
+          "yPos": 40,
+          "borderlist": [
+            25,
+            22,
+            23
+          ]
+        },
+        {
+          "id": 25,
+          "name": "argentina",
+          "xPos": 277,
+          "yPos": 36,
+          "borderlist": [
+            30,
+            24
+          ]
+        }
+      ],
+      "groupVal": 5
+    },
+    {
+      "name": "afrori",
+      "color": "#ffd780",
+      "territories": [
+        {
+          "id": 16,
+          "name": "tungu",
+          "xPos": 537,
+          "yPos": 178,
+          "borderlist": [
+            18,
+            17,
+            19
+          ]
+        },
+        {
+          "id": 17,
+          "name": "south_afrori",
+          "xPos": 538,
+          "yPos": 210,
+          "borderlist": [
+            16,
+            15,
+            11
+          ]
+        },
+        {
+          "id": 18,
+          "name": "north_afrori",
+          "xPos": 486,
+          "yPos": 131,
+          "borderlist": [
+            20,
+            19,
+            16
+          ]
+        },
+        {
+          "id": 19,
+          "name": "east_afrori",
+          "xPos": 540,
+          "yPos": 144,
+          "borderlist": [
+            18,
+            21,
+            16
+          ]
+        },
+        {
+          "id": 20,
+          "name": "egypt",
+          "xPos": 443,
+          "yPos": 100,
+          "borderlist": [
+            23,
+            1,
+            18
+          ]
+        },
+        {
+          "id": 21,
+          "name": "maganar",
+          "xPos": 578,
+          "yPos": 110,
+          "borderlist": [
+            19,
+            27
+          ]
+        }
+      ],
+      "groupVal": 5
+    },
+    {
+      "name": "ulstrailia",
+      "color": "magenta",
+      "territories": [
+        {
+          "id": 12,
+          "name": "new_guinia",
+          "xPos": 513,
+          "yPos": 314,
+          "borderlist": [
+            15,
+            13
+          ]
+        },
+        {
+          "id": 13,
+          "name": "western_ulstrailia",
+          "xPos": 525,
+          "yPos": 340,
+          "borderlist": [
+            15,
+            14,
+            12
+          ]
+        },
+        {
+          "id": 14,
+          "name": "eastern_ulstarilia",
+          "xPos": 567,
+          "yPos": 355,
+          "borderlist": [
+            15,
+            13
+          ]
+        },
+        {
+          "id": 15,
+          "name": "jacuncail",
+          "xPos": 561,
+          "yPos": 300,
+          "borderlist": [
+            17,
+            12,
+            13,
+            14
+          ]
+        }
+      ],
+      "groupVal": 5
+    }
+  ]
+}

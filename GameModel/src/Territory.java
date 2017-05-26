@@ -6,7 +6,7 @@ public class Territory {
 		private int 	xPos;
 		private int 	yPos;
 		public ArrayList<Integer> borderlist;
-		public ArrayList<Territory> borders;
+		//public ArrayList<Territory> borders;
 		
 		public Territory (int territoryId, String territoryName, int xPosition, int yPosition) {
 			id		= territoryId;
@@ -14,16 +14,16 @@ public class Territory {
 			xPos    = xPosition;
 			yPos    = yPosition;
 			borderlist = new ArrayList<Integer>();
-			borders = new ArrayList<Territory>(); 	//we need to make note of this because
+			//borders = new ArrayList<Territory>(); 	//we need to make note of this because
 													//in our specs, we say this is a list of
 													//ints, but I like this better	
 		}
 		
-		public ArrayList<Territory> getBorders() {
+		/*public ArrayList<Territory> getBorders() {
 			return borders;
 		}
 		
 		public void addBorder(Territory borderTerritory) {	//do we need to do this or is this for GameSetup???
 			borders.add(borderTerritory);
-		}
+		}*/
 	}
