@@ -66,6 +66,7 @@ public class ModelController {
 		self = me;
 		gui = new GUIRiskGame();
 		gui.spawnGame(mapFileGui, mapImg, String.valueOf(players.length));
+		new Thread(gui).start();
 		board = new Board(0,mapFileBoard,rules, players);
 		locState = new GameState(board.getGameMap(),players);
 	}
@@ -100,12 +101,13 @@ public class ModelController {
 			System.out.println("failed to get state");
 			return null;
 		}
-		new Thread(gui).start();
 		synchronized(gui){
 			try {
 				//infinite loop. not necessary but shows how this works with checking with responses
 				while(true){
+					Thread.sleep(100);
 					switch (locState.getgamePhase()) {
+						case 0:
 						case 1: // Territory Select
 							//get initial pool for player
 							if(board.getArmyPool()==0)
@@ -118,24 +120,23 @@ public class ModelController {
 							System.out.println("response!");
 							
 							//get selected territory and add army to that spot IF OWNED
-							if(!addArmy(gui.selectedTerritory,-1,self)){
+							if(!addArmy(gui.selectedTerritory,1,-1)){
 								System.out.println("must select unowned country!");
 								break;
 							}
-							//add army to territory
-							locState.addArmy(gui.selectedTerritory, 1);
+
 							//remove added army from pool
 							board.removeFromArmyPool(1);
 							//check if all territories are claimed
 							if (locState.allClaimed()) {
 								gui.turnPhase++;				//why does gui have a turnPhase object?
 								locState.incrementGamePhase();	//this makes sense
-								break;
 							}
 							//added army to board. now end turn
 							System.out.println("Ending Turn");
 							gui.notTurn();
 							gui.selectedTerritory = -1;
+							gui.updateMap(locState.getmap());
 							gui.notify();
 							return locState;
 						case 2: // Territory Placement
@@ -354,8 +355,10 @@ public class ModelController {
 	*/
 	
 	private boolean addArmy(int selectedTerritory,int numUnits, int me){
-		if(locState.isOwner(selectedTerritory,me))
+		if(locState.isOwner(selectedTerritory,me)){
 			locState.addArmy(selectedTerritory, numUnits);
+			locState.getmap()[selectedTerritory].owner_id=self;
+		}
 		else
 			return false;
 		return true;

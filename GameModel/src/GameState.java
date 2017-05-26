@@ -19,7 +19,7 @@ public class GameState {
 		map = aMap.convertToTerritoryInfoArray();
 		players = playerArray; 
 		turnToken = 0;
-		gamePhase = 0;
+		gamePhase = 1;
 		deck = null;
 	}
 	

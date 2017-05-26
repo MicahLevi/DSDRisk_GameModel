@@ -834,6 +834,7 @@ public class GUIRiskGame extends JPanel implements Runnable{
 		    {
 				int i = myButtons.indexOf(e.getSource());
 				aGlobalClicked = i;
+				selectedTerritory = i;
 				System.out.println(name + " clicked");
 			}
 		});
@@ -842,8 +843,11 @@ public class GUIRiskGame extends JPanel implements Runnable{
 
 
 	public void updateMap(TerritoryInfo[] in){
+		int colorId = 0;
 		for (int i = 0; i < countries.size(); i++) {
-			countries.get(i).setButtonColor(myCols[in[i].owner_id]);
+			colorId = in[i].owner_id;
+			if(colorId != -1)
+				countries.get(i).setButtonColor(myCols[in[i].owner_id]);
 			countries.get(i).setArmies(in[i].num_armies);
 			//countries.get(3).setArmies(testInt);
 			  //clonedCopy.add(obj.clone());
@@ -859,14 +863,14 @@ public class GUIRiskGame extends JPanel implements Runnable{
 			while(true){
 				//sleep for a second to slow things down or it breaks
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				//check to see if the global was clicked(something was clicked/flagged)
-				if(aGlobalClicked!=-1){
-					System.out.println("aGlobal: " + aGlobalClicked);
+				if(selectedTerritory!=-1){
+					System.out.println("aGlobal: " + selectedTerritory);
 					//notify the parent that something was clicked
 					notify();
 					System.out.println("waiting inner...");
