@@ -71,6 +71,20 @@ public class Board {
 		else
 			return 15;
 	}
+	
+	/**
+	 * gets an initial amount of armies for placement. territories*3/players
+	 * @return
+	 */
+	public void setTestInitArmyPool(){
+		int pool = 0;
+		for(Continent c: map.getContinents())
+			pool += c.territories.size();
+		pool*=3;
+		pool/=players.length;
+		armyPool = pool;
+		
+	}
 }
 
 //enum Rule_Name {RULE1, RULE2, RULE3} removed

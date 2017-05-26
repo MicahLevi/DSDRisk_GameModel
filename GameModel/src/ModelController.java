@@ -9,6 +9,8 @@ public class ModelController {
 	private int placingArmies;
 	private TerritoryInfo storedTerritory;
 	
+	private boolean attackerSelected = false;
+	
 	
 	/**
 	 * Have GameSetup already create the board and pass it in
@@ -79,84 +81,158 @@ public class ModelController {
 	
 	
 	public GameState playTurn(Object currState) {
+		//TODO: get currstate properly through json functions
 		locState = (GameState) currState;
 		new Thread(gui).start();
-		//while(true){
 		synchronized(gui){
 			try {
 				//infinite loop. not necessary but shows how this works with checking with responses
 				while(true){
-					System.out.println("waiting...");
-					//wait to receive button input from gui
-					gui.wait();
-					System.out.println("response!");
-					switch (gui.turnPhase) {
+					switch (locState.getgamePhase()) {
 						case 1: // Territory Select
+							//get initial pool for player
+							if(board.getArmyPool()==0)
+								board.setTestInitArmyPool();
 							gui.pickInitCntrys();
-							locState.addArmy(gui.selectedTerritory, 1);
-							if (locState.allClaimed()) {
-								gui.turnPhase++;
-								locState.incrementGamePhase();
-								gui.selectedTerritory = -1;
+							
+							//wait to receive button input from gui
+							System.out.println("waiting...");
+							gui.wait();
+							System.out.println("response!");
+							
+							//get selected territory and add army to that spot IF OWNED
+							if(!addArmy(gui.selectedTerritory,-1,self)){
+								System.out.println("must select unowned country!");
+								break;
 							}
+							//add army to territory
+							locState.addArmy(gui.selectedTerritory, 1);
+							//remove added army from pool
+							board.removeFromArmyPool(1);
+							//check if all territories are claimed
+							if (locState.allClaimed()) {
+								gui.turnPhase++;				//why does gui have a turnPhase object?
+								locState.incrementGamePhase();	//this makes sense
+							}
+							//added army to board. now end turn
 							break;
 						case 2: // Territory Placement
 							gui.placingArmies(placingArmies);
-							locState.addArmy(gui.selectedTerritory, gui.numUnits);
-							placingArmies -= gui.numUnits;
-							if (placingArmies <= 0) {
-								gui.turnPhase++;
-								locState.incrementGamePhase();
-								gui.selectedTerritory = -1;
+							
+							//wait to receive button input from gui
+							System.out.println("waiting...");
+							gui.wait();
+							System.out.println("response!");
+							
+							//attempt to add army
+							if(!addArmy(gui.selectedTerritory,gui.numUnits,self)){
+								System.out.println("must select owned country!");
+								break;
+							}
+							
+							//if successful
+							board.removeFromArmyPool(gui.numUnits);
+							if (board.getArmyPool() == 0) {
+								gui.turnPhase++;	//??
+								//locState.incrementGamePhase();
+								//set gamePhase to be end of turn
+								locState.setgamePhase(6);
 								gui.numUnits = -1;
 							}
 							break;
 						case 3: // Deploy
-							if (placingArmies == -1)
-								placingArmies = getTurnStartArmies();
+							//initialize how many armies the player gets at the start of their turn
+							if (board.getArmyPool() == 0)
+								board.addArmyPool(getTurnStartArmies());
+							//set up gui
 							gui.placingArmies(placingArmies);
-							locState.addArmy(gui.selectedTerritory, gui.numUnits);
-							placingArmies -= gui.numUnits;
-							if (placingArmies <= 0) {
-								gui.turnPhase++;
-								gui.selectedTerritory = -1;
-								gui.numUnits = -1;
+							
+							//attempt to add armies
+							if(!addArmy(gui.selectedTerritory,gui.numUnits,self)){
+								System.out.println("must select owned country!");
+								break;
+							}
+							//if successful
+							board.removeFromArmyPool(gui.numUnits);
+							if (board.getArmyPool() == 0) {
+								gui.turnPhase++;	//??
+								locState.incrementGamePhase();
+								gui.numUnits = -1; //??
 							}
 							break;
 						case 4: // Attack
-							if (gui.selectedTerritory == -1) {
+							if(!attackerSelected){
 								gui.pickAttacker();
-								storedTerritory = locState.getmap()[gui.selectedTerritory];
+								
+								//wait to receive button input from gui
+								System.out.println("waiting...");
+								gui.wait();
+								System.out.println("response!");
+								if(locState.isOwner(gui.selectedTerritory, self))
+								{
+									attackerSelected=true;
+									storedTerritory = locState.getmap()[gui.selectedTerritory];
+									//switch to defender
+									gui.pickDefender();
+								}
+								else{
+									System.out.println("please pick a country you own!");
+								}
+								break;
 							}
 							else {
-								gui.pickDefender();
-								TerritoryInfo def = locState.getmap()[gui.selectedTerritory];
-								int[][] dice = attackCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies/2);
-								gui.showRoll(locState.getPlayers()[self].getname(),
-											locState.getPlayers()[def.owner_id].getname(),
-											dice[0][0], dice[0][1], dice[0][2],
-											dice[1][0], dice[1][1]);
-								gui.selectedTerritory = -1;
-								if (gui.nextPhase)
-									gui.turnPhase++;
+								System.out.println("waiting...");
+								gui.wait();
+								System.out.println("response!");
+								
+								//TODO: how do we annihilate and reset? this section needs a lot more logic
+								
+								//if defending country is not owned by you and is adjacent to where you are attacking from
+								if(!locState.isOwner(gui.selectedTerritory, self) && board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory))
+								{
+									TerritoryInfo def = locState.getmap()[gui.selectedTerritory];
+									int[][] dice = attackCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies/2);
+									gui.showRoll(locState.getPlayers()[self].getname(),
+												locState.getPlayers()[def.owner_id].getname(),
+												dice[0][0], dice[0][1], dice[0][2],
+												dice[1][0], dice[1][1]);
+									if (gui.nextPhase){
+										locState.incrementGamePhase();
+										gui.turnPhase++;
+										
+									}
+								}
+								else{
+									System.out.println("please pick valid country");
+								}
 							}
 							break;
 						case 5: // Fortify
-							if (gui.selectedTerritory == -1) {
+							if(storedTerritory==null){
 								gui.setFortSrc();
-								storedTerritory = locState.getmap()[gui.selectedTerritory];
+								if(locState.isOwner(gui.selectedTerritory, self))
+									storedTerritory = locState.getmap()[gui.selectedTerritory];
 							}
-							else {
+							else{
 								gui.setFortDest();
-								fortifyCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies/2);
-								gui.selectedTerritory = -1;
+								if(locState.isOwner(gui.selectedTerritory, self)&&board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory)){
+									fortifyCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies/2);
+									locState.incrementGamePhase();
+									break;
+								}
 								if (gui.nextPhase)
 									locState.incrementGamePhase();
 							}
 							break;
+						case 6: // end turn
+							System.out.println("Ending Turn");
+							gui.notTurn();
+							locState.setgamePhase(3);//set to deploy
+							gui.selectedTerritory = -1;//set control for gui back to -1
+							return locState;
 					}
-					System.out.println("Ending Turn");
-					gui.notTurn();
+					gui.selectedTerritory = -1;
+					System.out.println("passing control back to gui");
 					gui.notify();
 				}
 			/*} catch (InterruptedException e) {
@@ -246,6 +322,14 @@ public class ModelController {
 		return locState;
 	}
 	*/
+	
+	private boolean addArmy(int selectedTerritory,int numUnits, int me){
+		if(locState.isOwner(selectedTerritory,me))
+			locState.addArmy(selectedTerritory, numUnits);
+		else
+			return false;
+		return true;
+	}
 	private void setInitialArmies() {
 		board.addArmyPool(getTurnStartArmies());
 	}
