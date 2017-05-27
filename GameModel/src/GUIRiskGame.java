@@ -295,7 +295,6 @@ public class GUIRiskGame extends JPanel implements Runnable{
 		bottomPanel.add(annihilateP);
 		bottomPanel.repaint();
 	}
-	
 	public void fortifyNum(String src, String dest){
 		bottomPanel.removeAll();
 		JPanel moveP = new JPanel();
@@ -859,16 +858,32 @@ public class GUIRiskGame extends JPanel implements Runnable{
 	public void run() {
 		//this is what combines the threads. "this refers to it being the child process"
 		synchronized(this){
+			System.out.println("im here");
+			//notify();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e3) {
+				// TODO Auto-generated catch block
+				e3.printStackTrace();
+			}
+			try {
+				System.out.println("Locked!");
+				wait();
+				System.out.println("Freed!");
+			} catch (InterruptedException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 			//this is an infinite loop to keep checking for updates
 			while(true){
-				//sleep for a second to slow things down or it breaks
 				try {
-					Thread.sleep(500);
+					Thread.sleep(200);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				//check to see if the global was clicked(something was clicked/flagged)
+				//System.out.println(selectedTerritory);
 				if(selectedTerritory!=-1){
 					System.out.println("aGlobal: " + selectedTerritory);
 					//notify the parent that something was clicked

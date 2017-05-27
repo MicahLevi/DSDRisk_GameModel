@@ -276,7 +276,13 @@ public class GameState {
 		}
 		return false;
 	}
-	
+	public int getTotalDeployedArmies() {
+		int count = 0;
+		for(TerritoryInfo t: map){
+			count+=t.num_armies;
+		}
+		return count;
+	}
 	public void transferCards(int fromPlayerId, int toPlayerId) {
 		players[toPlayerId].addAllCards(players[fromPlayerId].conquerHand());
 	}

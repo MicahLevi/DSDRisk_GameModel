@@ -14,6 +14,7 @@ public class Board {
 	private Player[] players;
 	private int cardTurninNumber;
 	private int armyPool;
+	public int initArmyPool;
 	
 	public Board(long gameId, String mapName, Rule[] gameRules, Player[] gamePlayers) {
 		id = gameId;
@@ -96,6 +97,7 @@ public class Board {
 			pool += c.territories.size();
 		pool*=3;
 		pool/=players.length;
+		initArmyPool = pool;
 		armyPool = pool;
 		
 	}

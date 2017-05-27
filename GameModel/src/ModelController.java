@@ -93,7 +93,7 @@ public class ModelController {
 	}
 	
 	
-	public GameState playTurn(Object currState) {
+	public GameState playTurn(Object currState){
 		//TODO: get currstate properly through json functions
 		locState = (GameState) parseObj(currState,GameState.class);
 		if(locState==null)
@@ -101,11 +101,25 @@ public class ModelController {
 			System.out.println("failed to get state");
 			return null;
 		}
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		synchronized(gui){
+			System.out.println("and here");
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			try {
 				//infinite loop. not necessary but shows how this works with checking with responses
 				while(true){
-					Thread.sleep(100);
+					System.out.println("ping");
+					Thread.sleep(200);
 					switch (locState.getgamePhase()) {
 						case 0:
 						case 1: // Territory Select
@@ -116,6 +130,7 @@ public class ModelController {
 							
 							//wait to receive button input from gui
 							System.out.println("waiting...");
+							gui.notify();
 							gui.wait();
 							System.out.println("response!");
 							
@@ -137,13 +152,14 @@ public class ModelController {
 							gui.notTurn();
 							gui.selectedTerritory = -1;
 							gui.updateMap(locState.getmap());
-							gui.notify();
+							//gui.notify();
 							return locState;
 						case 2: // Territory Placement
 							gui.placingArmies(placingArmies);
 							
 							//wait to receive button input from gui
 							System.out.println("waiting...");
+							gui.notify();
 							gui.wait();
 							System.out.println("response!");
 							
@@ -154,13 +170,11 @@ public class ModelController {
 							}
 							
 							//if successful
-							board.removeFromArmyPool(gui.numUnits);
-							if (board.getArmyPool() == 0) {
+							board.removeFromArmyPool(gui.numUnits); //honestly no point in this becides maybe for gui? 
+							if (locState.getTotalDeployedArmies()==board.initArmyPool) {
 								gui.turnPhase++;	//??
-								//locState.incrementGamePhase();
-								//set gamePhase to be end of turn
-								locState.setgamePhase(3);
-								gui.numUnits = -1;
+								locState.incrementGamePhase();
+								gui.numUnits = -1;  //??
 								break;
 							}
 							
@@ -195,6 +209,7 @@ public class ModelController {
 								
 								//wait to receive button input from gui
 								System.out.println("waiting...");
+								gui.notify();
 								gui.wait();
 								System.out.println("response!");
 								if(locState.isOwner(gui.selectedTerritory, self))
@@ -211,6 +226,7 @@ public class ModelController {
 							}
 							else {
 								System.out.println("waiting...");
+								gui.notify();
 								gui.wait();
 								System.out.println("response!");
 								
@@ -264,7 +280,7 @@ public class ModelController {
 					}
 					gui.selectedTerritory = -1;
 					System.out.println("passing control back to gui");
-					gui.notify();
+					//gui.notify();
 				}
 			/*} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
