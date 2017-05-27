@@ -29,7 +29,7 @@ public class GUIRiskGame extends JPanel implements Runnable{
 	//globals
 	int turnPhase = 0;
 	int selectedTerritory = -1;
-	int numUnits = 0;
+	int numUnits = 1;
 	boolean nextPhase = false;
 	
 	
@@ -868,6 +868,7 @@ public class GUIRiskGame extends JPanel implements Runnable{
 			}
 			try {
 				System.out.println("Locked!");
+				//notify();
 				wait();
 				System.out.println("Freed!");
 			} catch (InterruptedException e2) {

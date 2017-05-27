@@ -95,8 +95,7 @@ public class Board {
 		int pool = 0;
 		for(Continent c: map.getConts())
 			pool += c.territories.size();
-		pool*=3;
-		pool/=players.length;
+		pool+=(pool/4);
 		initArmyPool = pool;
 		armyPool = pool;
 		

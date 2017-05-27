@@ -10,6 +10,7 @@ public class GameState {
 	private Player[] 			players;
 	private int 				turnToken;
 	private int 				gamePhase;
+	private int					winner;
 	private Card[] 				deck;
 	
 	public GameState(){
@@ -20,6 +21,7 @@ public class GameState {
 		players = playerArray; 
 		turnToken = 0;
 		gamePhase = 1;
+		winner = 0;
 		deck = null;
 	}
 	

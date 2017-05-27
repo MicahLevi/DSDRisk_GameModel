@@ -120,6 +120,7 @@ public class ModelController {
 				while(true){
 					System.out.println("ping");
 					Thread.sleep(200);
+					System.out.println(locState.getgamePhase());
 					switch (locState.getgamePhase()) {
 						case 0:
 						case 1: // Territory Select
@@ -144,6 +145,7 @@ public class ModelController {
 							board.removeFromArmyPool(1);
 							//check if all territories are claimed
 							if (locState.allClaimed()) {
+								System.out.println("Incrementing Game Phase");
 								gui.turnPhase++;				//why does gui have a turnPhase object?
 								locState.incrementGamePhase();	//this makes sense
 							}
@@ -171,6 +173,7 @@ public class ModelController {
 							
 							//if successful
 							board.removeFromArmyPool(gui.numUnits); //honestly no point in this becides maybe for gui? 
+							System.out.println("total deployed: " + locState.getTotalDeployedArmies() + " init army: " +board.initArmyPool);
 							if (locState.getTotalDeployedArmies()==board.initArmyPool) {
 								gui.turnPhase++;	//??
 								locState.incrementGamePhase();
@@ -181,7 +184,8 @@ public class ModelController {
 							//end turn without updating gamePhase for others
 							gui.notTurn();
 							gui.selectedTerritory = -1;
-							gui.notify();
+							gui.updateMap(locState.getmap());
+							//gui.notify();
 							return locState;
 						case 3: // Deploy
 							//initialize how many armies the player gets at the start of their turn

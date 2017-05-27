@@ -17,7 +17,7 @@ public class Main {
 		ModelController model = new ModelController();
 		model.initGame(mapFileGui,mapFileBoard, mapImg, players, 0);
 		GameState testState = model.playTurn(model.getGameState());
-		while(!testState.allClaimed())
+		while(true)
 			model.playTurn(testState);
 		/*try {
 			model.saveObjToFile("GameState.json", model.getGameState());
@@ -25,6 +25,7 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
+
 		/*try {
 			model.saveObjToFile("MapFile.json", model.getBoard().getGameMap());
 		} catch (IOException e) {

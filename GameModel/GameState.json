@@ -66,8 +66,8 @@
       "country_id": 33
     },
     {
-      "owner_id": -1,
-      "num_armies": 0,
+      "owner_id": 0,
+      "num_armies": 1,
       "country_id": 34
     },
     {
@@ -239,5 +239,6 @@
     }
   ],
   "turnToken": 0,
-  "gamePhase": 0
+  "gamePhase": 1,
+  "winner": 0
 }
