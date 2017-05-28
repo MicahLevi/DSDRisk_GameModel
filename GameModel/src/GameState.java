@@ -135,7 +135,7 @@ public class GameState {
 	 */
 	public int fortifyCountry(int from_id, int to_id, int num_units) {
 		TerritoryInfo fromArmy = map[from_id];
-		TerritoryInfo toArmy = map[from_id];
+		TerritoryInfo toArmy = map[to_id];
 		if(fromArmy.owner_id == toArmy.owner_id)
 		{
 			if((fromArmy.num_armies-num_units)<1)

@@ -192,7 +192,9 @@ public class GUIRiskGame extends JPanel implements Runnable{
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("attkSrcB2 clicked");
-					setFortSrc();					
+				nextPhase = true;
+				selectedTerritory = 1;
+				setFortSrc();					
 			}
 		});
 		attkSrcP.add(endTurn);

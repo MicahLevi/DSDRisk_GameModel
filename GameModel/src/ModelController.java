@@ -1,6 +1,7 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,6 +16,7 @@ public class ModelController {
 	private GUIRiskGame gui;
 	private int placingArmies;
 	private TerritoryInfo storedTerritory;
+	private int heldId = -1;
 	
 	private boolean attackerSelected = false;
 	
@@ -157,7 +159,7 @@ public class ModelController {
 							//gui.notify();
 							return locState;
 						case 2: // Territory Placement
-							gui.placingArmies(placingArmies);
+							gui.placingArmies(board.getArmyPool());
 							
 							//wait to receive button input from gui
 							System.out.println("waiting...");
@@ -177,7 +179,7 @@ public class ModelController {
 							if (locState.getTotalDeployedArmies()==board.initArmyPool) {
 								gui.turnPhase++;	//??
 								locState.incrementGamePhase();
-								gui.numUnits = -1;  //??
+								//gui.numUnits = -1;  //??
 								break;
 							}
 							
@@ -192,8 +194,12 @@ public class ModelController {
 							if (board.getArmyPool() == 0)
 								board.addArmyPool(getTurnStartArmies());
 							//set up gui
-							gui.placingArmies(placingArmies);
+							gui.placingArmies(board.getArmyPool());
 							
+							System.out.println("waiting...");
+							gui.notify();
+							gui.wait();
+							System.out.println("response!");
 							//attempt to add armies
 							if(!addArmy(gui.selectedTerritory,gui.numUnits,self)){
 								System.out.println("must select owned country!");
@@ -204,8 +210,10 @@ public class ModelController {
 							if (board.getArmyPool() == 0) {
 								gui.turnPhase++;	//??
 								locState.incrementGamePhase();
-								gui.numUnits = -1; //??
+								//gui.numUnits = -1; //??
+								gui.selectedTerritory = -1;
 							}
+							gui.updateMap(locState.getmap());
 							break;
 						case 4: // Attack
 							if(!attackerSelected){
@@ -216,6 +224,12 @@ public class ModelController {
 								gui.notify();
 								gui.wait();
 								System.out.println("response!");
+								if(gui.nextPhase)
+								{
+									locState.incrementGamePhase();
+									gui.nextPhase=false;
+									gui.selectedTerritory=-1;
+								}
 								if(locState.isOwner(gui.selectedTerritory, self))
 								{
 									attackerSelected=true;
@@ -248,6 +262,7 @@ public class ModelController {
 									if (gui.nextPhase){
 										locState.incrementGamePhase();
 										gui.turnPhase++;
+										gui.setFortSrc();
 										
 									}
 								}
@@ -257,29 +272,48 @@ public class ModelController {
 							}
 							break;
 						case 5: // Fortify
-							if(storedTerritory==null){
-								gui.setFortSrc();
-								if(locState.isOwner(gui.selectedTerritory, self))
-									storedTerritory = locState.getmap()[gui.selectedTerritory];
+							
+							System.out.println("waiting...");
+							gui.notify();
+							gui.wait();
+							System.out.println("response!");
+							if(heldId == -1){
+								if(locState.isOwner(gui.selectedTerritory, self)){
+									heldId = gui.selectedTerritory;
+									gui.setFortDest();
+								}
+								else{
+									System.out.println("please select a territory you own");
+								}
+								gui.selectedTerritory = -1;
 							}
 							else{
-								gui.setFortDest();
-								if(locState.isOwner(gui.selectedTerritory, self)&&board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory)){
-									fortifyCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies/2);
+								if(locState.isOwner(gui.selectedTerritory, self)&&board.territoryIsAdjacent(heldId, gui.selectedTerritory)){
+									if(!fortifyCountry(heldId, gui.selectedTerritory, locState.getmap()[heldId].num_armies/2))
+									{
+										System.out.println("please select valid country");
+										gui.selectedTerritory = -1;
+										break;
+									}
 									locState.incrementGamePhase();
-									break;
+									storedTerritory = null;
+									gui.selectedTerritory = -1;
+									heldId = -1;
 								}
-								if (gui.nextPhase)
-									locState.incrementGamePhase();
+								else{
+									System.out.println("Please select valid country");
+								}
+								gui.selectedTerritory = -1;
 							}
+							gui.updateMap(locState.getmap());
 							break;
 						case 6: // end turn
 							System.out.println("Ending Turn");
 							gui.notTurn();
 							locState.setgamePhase(3);//set to deploy
 							gui.selectedTerritory = -1;//set control for gui back to -1
-							System.out.println("passing control back to gui");
-							gui.notify();
+							//System.out.println("passing control back to gui");
+							//gui.notify();
 							return locState;
 					}
 					gui.selectedTerritory = -1;
@@ -499,18 +533,23 @@ public class ModelController {
 	}
 
 	// TODO: Add comments
-	public void fortifyCountry(int from_id, int to_id, int num_units) throws Exception {
+	public boolean fortifyCountry(int from_id, int to_id, int num_units) throws Exception {
 		int status = -3;
 		if (board.territoryIsAdjacent(from_id, to_id))
 			status = locState.fortifyCountry(from_id, to_id, num_units);
 		switch (status) {
 			case -1:
-				throw new Exception("Fortifying to wrong territory");
+				//throw new Exception("Fortifying to wrong territory");
+				System.out.println("Fortifying to wrong territory");
 			case -2:
-				throw new Exception("Fortifying: too many units requested to move");
+				//throw new Exception("Fortifying: too many units requested to move");
+				System.out.println("Fortifying: too many units requested to move");
 			case -3:
-				throw new Exception("Fortifying: territories must be adjacent");
+				//throw new Exception("Fortifying: territories must be adjacent");
+				System.out.println("Fortifying: territories must be adjacent");
+			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -523,7 +562,8 @@ public class ModelController {
 	private int getTurnStartArmies(){
 		int counter = 0;
 		counter += locState.territoryAdder();
-		counter += locState.continentAdder(board.getGameMap());
+		//TODO: FIX THIS
+		//counter += locState.continentAdder(board.getGameMap());
 		return counter;
 	}
 	
