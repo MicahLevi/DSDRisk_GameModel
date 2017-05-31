@@ -14,18 +14,23 @@ public class Main {
 			players[i] = new Player("Player_" + i, i);
 		}
 		
-		ModelController model = new ModelController();
-		model.initGame(mapFileGui,mapFileBoard, mapImg, players, 0);
-		GameState testState = model.playTurn(model.getGameState());
+		ArrayList<ModelController> allModels = new ArrayList<ModelController>();
+		for(int i = 0; i<players.length;i++)
+		{
+			allModels.add(new ModelController());
+			allModels.get(i).initGame(mapFileGui,mapFileBoard, mapImg, players, i);
+		}
+		GameState testState = allModels.get(0).getGameState();
 		while(true)
-			model.playTurn(testState);
+			for(int i = 0; i<players.length;i++){
+				testState = allModels.get(i).playTurn(testState);
+			}
 		/*try {
 			model.saveObjToFile("GameState.json", model.getGameState());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-
 		/*try {
 			model.saveObjToFile("MapFile.json", model.getBoard().getGameMap());
 		} catch (IOException e) {

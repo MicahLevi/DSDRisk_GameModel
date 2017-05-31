@@ -120,9 +120,10 @@ public class ModelController {
 			try {
 				//infinite loop. not necessary but shows how this works with checking with responses
 				while(true){
-					System.out.println("ping");
+					//System.out.println("ping");
 					Thread.sleep(200);
 					System.out.println(locState.getgamePhase());
+					gui.updateMap(locState.getmap());
 					switch (locState.getgamePhase()) {
 						case 0:
 						case 1: // Territory Select
