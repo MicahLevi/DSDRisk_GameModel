@@ -9,8 +9,8 @@ public class Main {
 		String mapFileBoard = "maps/ameroki.map";
 		String mapImg = "imgs/Classic.jpg";
 		String numPlayer = "5";
-		Player[] players = new Player[5];
-		for (int i = 0; i<5; i++) {
+		Player[] players = new Player[2];
+		for (int i = 0; i<2; i++) {
 			players[i] = new Player("Player_" + i, i);
 		}
 		

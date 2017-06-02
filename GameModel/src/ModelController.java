@@ -145,7 +145,7 @@ public class ModelController {
 							}
 
 							//remove added army from pool
-							board.removeFromArmyPool(1);
+							//board.removeFromArmyPool(1);
 							//check if all territories are claimed
 							if (locState.allClaimed()) {
 								System.out.println("Incrementing Game Phase");
@@ -175,20 +175,17 @@ public class ModelController {
 							}
 							
 							//if successful
-							board.removeFromArmyPool(gui.numUnits); //honestly no point in this becides maybe for gui? 
+							board.removeFromArmyPool(gui.numUnits);
 							System.out.println("total deployed: " + locState.getTotalDeployedArmies() + " init army: " +board.initArmyPool);
-							if (locState.getTotalDeployedArmies()==board.initArmyPool) {
+							if (locState.getTotalDeployedArmies()==((board.initArmyPool*locState.getPlayers().length)+board.getGameMap().convertToTerritoryInfoArray().length)) {
 								gui.turnPhase++;	//??
 								locState.incrementGamePhase();
-								//gui.numUnits = -1;  //??
-								break;
 							}
 							
 							//end turn without updating gamePhase for others
 							gui.notTurn();
 							gui.selectedTerritory = -1;
 							gui.updateMap(locState.getmap());
-							//gui.notify();
 							return locState;
 						case 3: // Deploy
 							//initialize how many armies the player gets at the start of their turn
@@ -230,6 +227,7 @@ public class ModelController {
 									locState.incrementGamePhase();
 									gui.nextPhase=false;
 									gui.selectedTerritory=-1;
+									break;
 								}
 								if(locState.isOwner(gui.selectedTerritory, self))
 								{
@@ -297,7 +295,7 @@ public class ModelController {
 										break;
 									}
 									locState.incrementGamePhase();
-									storedTerritory = null;
+									//storedTerritory = null;
 									gui.selectedTerritory = -1;
 									heldId = -1;
 								}

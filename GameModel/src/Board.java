@@ -92,12 +92,14 @@ public class Board {
 	 * @return
 	 */
 	public void setTestInitArmyPool(){
-		int pool = 0;
+		/*int pool = 0;
 		for(Continent c: map.getConts())
 			pool += c.territories.size();
 		pool+=(pool/4);
 		initArmyPool = pool;
-		armyPool = pool;
+		armyPool = pool;*/
+		initArmyPool = 10;
+		armyPool = 10;
 		
 	}
 
