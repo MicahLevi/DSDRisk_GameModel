@@ -66,8 +66,8 @@
       "country_id": 33
     },
     {
-      "owner_id": 0,
-      "num_armies": 1,
+      "owner_id": -1,
+      "num_armies": 0,
       "country_id": 34
     },
     {
@@ -221,24 +221,31 @@
       "name": "Player_1",
       "id": 1,
       "hand": []
-    },
-    {
-      "name": "Player_2",
-      "id": 2,
-      "hand": []
-    },
-    {
-      "name": "Player_3",
-      "id": 3,
-      "hand": []
-    },
-    {
-      "name": "Player_4",
-      "id": 4,
-      "hand": []
     }
   ],
   "turnToken": 0,
   "gamePhase": 1,
-  "winner": 0
+  "winner": 0,
+  "deck": [
+    {
+      "territory": 0,
+      "type": 0
+    },
+    {
+      "territory": 0,
+      "type": 0
+    },
+    {
+      "territory": 0,
+      "type": 0
+    },
+    {
+      "territory": 0,
+      "type": 0
+    },
+    {
+      "territory": 0,
+      "type": 0
+    }
+  ]
 }

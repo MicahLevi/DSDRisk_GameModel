@@ -21,16 +21,16 @@ public class Main {
 			allModels.get(i).initGame(mapFileGui,mapFileBoard, mapImg, players, i);
 		}
 		GameState testState = allModels.get(0).getGameState();
-		while(true)
+		/*while(true)
 			for(int i = 0; i<players.length;i++){
 				testState = allModels.get(i).playTurn(testState);
-			}
-		/*try {
-			model.saveObjToFile("GameState.json", model.getGameState());
+			}*/
+		try {
+			allModels.get(0).saveObjToFile("GameState.json", allModels.get(0).getGameState());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		/*try {
 			model.saveObjToFile("MapFile.json", model.getBoard().getGameMap());
 		} catch (IOException e) {

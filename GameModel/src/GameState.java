@@ -22,7 +22,9 @@ public class GameState {
 		turnToken = 0;
 		gamePhase = 1;
 		winner = 0;
-		deck = null;
+		deck = new Card[5];
+		for(int i = 0; i<deck.length;i++)
+			deck[i] = new Card();
 	}
 	
 	public void addArmy(int country_id, int num_units) {
