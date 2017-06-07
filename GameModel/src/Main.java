@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Main {
 	public static void main (String[] args){
 		String mapFileGui = "maps/Classic.txt";
-		String mapFileBoard = "maps/ameroki.map";
+		String mapFileBoard = "maps/world.map";
 		String mapImg = "imgs/Classic.jpg";
 		String numPlayer = "5";
 		Player[] players = new Player[2];

@@ -223,11 +223,11 @@ public class ModelController {
 							}
 							else if(!attackerSelected){
 								//wait to receive button input from gui
-								System.out.println("waiting...");
+								System.out.println("waiting for attacker...");
 								gui.notify();
 								gui.wait();
 								System.out.println("response!");
-								if(locState.isOwner(gui.selectedTerritory, self))
+								if(locState.isOwner(gui.selectedTerritory, self) && locState.getmap()[gui.selectedTerritory].num_armies>1)
 								{
 									attackerSelected=true;
 									storedTerritory = locState.getmap()[gui.selectedTerritory];
@@ -246,7 +246,6 @@ public class ModelController {
 								System.out.println("response!");
 								if (gui.cancelSelect)
 								{
-									System.out.println("GOTEM");
 									gui.pickAttacker();
 									attackerSelected = false;
 									storedTerritory = null;
@@ -258,11 +257,14 @@ public class ModelController {
 									if(!locState.isOwner(gui.selectedTerritory, self) && board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory))
 									{
 										TerritoryInfo def = locState.getmap()[gui.selectedTerritory];
-										int[][] dice = attackCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies/2);
+										System.out.println("Attacking...");
+										int[][] dice = attackCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies-1);
+										System.out.println("Showing Roll...");
 										gui.showRoll(locState.getPlayers()[self].getname(),
 													locState.getPlayers()[def.owner_id].getname(),
 													dice[0][0], dice[0][1], dice[0][2],
 													dice[1][0], dice[1][1]);
+										System.out.println("Done Attacking");
 										storedTerritory = null;
 										gui.pickAttacker();
 									}

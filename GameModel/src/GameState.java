@@ -55,6 +55,9 @@ public class GameState {
 		TerritoryInfo defend = map[defend_id];
 		int[] atk_dice = new int[0];
 		int[] def_dice = new int[0];
+		System.out.println(attack.owner_id + " from " + attack_id + " with " + attack.num_armies + " armies attacking "
+						 + defend.owner_id + " from " + defend_id + " with " + defend.num_armies + " armies defending ");
+		
 		if (attack.owner_id == defend.owner_id)
 		{
 			throw new Exception("Cannot attack your own territory");
