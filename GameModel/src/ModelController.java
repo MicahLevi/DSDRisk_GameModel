@@ -270,6 +270,8 @@ public class ModelController {
 										System.out.println("please pick valid country");
 										System.out.println(storedTerritory.country_id + " adjacent to " + gui.selectedTerritory + board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory));
 										System.out.println(board.getGameMap().getTerritory(storedTerritory.country_id).borderlist.toString());
+										System.out.println(board.getGameMap().getTerritory(storedTerritory.country_id).name);
+										System.out.println(board.getGameMap().getTerritory(gui.selectedTerritory).name);
 									}
 								}
 							}

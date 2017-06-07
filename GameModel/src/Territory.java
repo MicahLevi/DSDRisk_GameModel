@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Territory {
 		public int		id;
-		private String  name;
+		public String  name;
 		private int 	xPos;
 		private int 	yPos;
 		public ArrayList<Integer> borderlist;
