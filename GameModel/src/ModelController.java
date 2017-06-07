@@ -210,25 +210,23 @@ public class ModelController {
 								locState.incrementGamePhase();
 								//gui.numUnits = -1; //??
 								gui.selectedTerritory = -1;
+								gui.pickAttacker();
 							}
 							gui.updateMap(locState.getmap());
 							break;
 						case 4: // Attack
-							if(!attackerSelected){
-								gui.pickAttacker();
-								
+							if (gui.nextPhase) {
+								gui.turnPhase++;	//??
+								locState.incrementGamePhase();
+								gui.nextPhase = false;
+								gui.setFortSrc();
+							}
+							else if(!attackerSelected){
 								//wait to receive button input from gui
 								System.out.println("waiting...");
 								gui.notify();
 								gui.wait();
 								System.out.println("response!");
-								if(gui.nextPhase)
-								{
-									locState.incrementGamePhase();
-									gui.nextPhase=false;
-									gui.selectedTerritory=-1;
-									break;
-								}
 								if(locState.isOwner(gui.selectedTerritory, self))
 								{
 									attackerSelected=true;
@@ -242,33 +240,40 @@ public class ModelController {
 								break;
 							}
 							else {
-								System.out.println("waiting...");
+								System.out.println("waiting for defender...");
 								gui.notify();
 								gui.wait();
 								System.out.println("response!");
-								
-								//TODO: how do we annihilate and reset? this section needs a lot more logic
-								
-								//if defending country is not owned by you and is adjacent to where you are attacking from
-								if(!locState.isOwner(gui.selectedTerritory, self) && board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory))
+								if (gui.cancelSelect)
 								{
-									TerritoryInfo def = locState.getmap()[gui.selectedTerritory];
-									int[][] dice = attackCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies/2);
-									gui.showRoll(locState.getPlayers()[self].getname(),
-												locState.getPlayers()[def.owner_id].getname(),
-												dice[0][0], dice[0][1], dice[0][2],
-												dice[1][0], dice[1][1]);
-									if (gui.nextPhase){
-										locState.incrementGamePhase();
-										gui.turnPhase++;
-										gui.setFortSrc();
-										
+									System.out.println("GOTEM");
+									gui.pickAttacker();
+									attackerSelected = false;
+									storedTerritory = null;
+									gui.cancelSelect = false;
+								}
+								else
+								{
+									//if defending country is not owned by you and is adjacent to where you are attacking from
+									if(!locState.isOwner(gui.selectedTerritory, self) && board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory))
+									{
+										TerritoryInfo def = locState.getmap()[gui.selectedTerritory];
+										int[][] dice = attackCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies/2);
+										gui.showRoll(locState.getPlayers()[self].getname(),
+													locState.getPlayers()[def.owner_id].getname(),
+													dice[0][0], dice[0][1], dice[0][2],
+													dice[1][0], dice[1][1]);
+										storedTerritory = null;
+										gui.pickAttacker();
+									}
+									else{
+										System.out.println("please pick valid country");
+										System.out.println(storedTerritory.country_id + " adjacent to " + gui.selectedTerritory + board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory));
+										System.out.println(board.getGameMap().getTerritory(storedTerritory.country_id).borderlist.toString());
 									}
 								}
-								else{
-									System.out.println("please pick valid country");
-								}
 							}
+							gui.updateMap(locState.getmap());
 							break;
 						case 5: // Fortify
 							

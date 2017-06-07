@@ -31,6 +31,7 @@ public class GUIRiskGame extends JPanel implements Runnable{
 	int selectedTerritory = -1;
 	int numUnits = 1;
 	boolean nextPhase = false;
+	boolean cancelSelect = false;
 	
 	
 	public Color [] myCols = {Color.red,Color.orange,Color.green,Color.blue,Color.yellow,Color.magenta};
@@ -238,6 +239,7 @@ public class GUIRiskGame extends JPanel implements Runnable{
 			{
 				System.out.println("defB2 clicked");
 				pickAttacker();
+				cancelSelect = true;
 			}
 		});
 		defP.add(defB2);
