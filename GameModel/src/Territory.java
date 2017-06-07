@@ -9,7 +9,7 @@ public class Territory {
 		//public ArrayList<Territory> borders;
 		
 		public Territory (int territoryId, String territoryName, int xPosition, int yPosition) {
-			id		= territoryId;
+			id		= territoryId-1;
 			name    = territoryName;
 			xPos    = xPosition;
 			yPos    = yPosition;

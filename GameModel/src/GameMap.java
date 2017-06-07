@@ -108,7 +108,7 @@ public class GameMap {
 							for(j = 0; j < conts.get(i).territories.size(); j++){
 								if(territoryId == conts.get(i).territories.get(j).id){
 									for(k = 1; k < splitBorders.length; k++){
-										conts.get(i).territories.get(j).borderlist.add(Integer.parseInt(splitBorders[k]));
+										conts.get(i).territories.get(j).borderlist.add(Integer.parseInt(splitBorders[k])-1);
 									}
 									break outerloop;
 								}
