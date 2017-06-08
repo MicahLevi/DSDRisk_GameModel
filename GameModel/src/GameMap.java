@@ -101,15 +101,19 @@ public class GameMap {
 						break;
 					}else{
 						String[] splitBorders = line.split(" ");
-						int territoryId = Integer.parseInt(splitBorders[0]);
+						int territoryId = Integer.parseInt(splitBorders[0]) - 1;
 						Territory tempTerr;
 						outerloop:
 						for(i = 0; i < conts.size(); i++){
+							System.out.println(conts.get(i).name);
 							for(j = 0; j < conts.get(i).territories.size(); j++){
+								System.out.println(conts.get(i).territories.get(j).name + " " + conts.get(i).territories.get(j).id);
 								if(territoryId == conts.get(i).territories.get(j).id){
 									for(k = 1; k < splitBorders.length; k++){
 										conts.get(i).territories.get(j).borderlist.add(Integer.parseInt(splitBorders[k])-1);
+										System.out.print(Integer.parseInt(splitBorders[k])-1 + " ");
 									}
+									System.out.println("");
 									break outerloop;
 								}
 								

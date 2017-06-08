@@ -250,6 +250,7 @@ public class ModelController {
 									attackerSelected = false;
 									storedTerritory = null;
 									gui.cancelSelect = false;
+									gui.selectedTerritory = -1;
 								}
 								else
 								{
@@ -266,14 +267,17 @@ public class ModelController {
 													dice[1][0], dice[1][1]);
 										System.out.println("Done Attacking");
 										storedTerritory = null;
+										gui.selectedTerritory = -1;
+										attackerSelected = false;
 										gui.pickAttacker();
 									}
 									else{
 										System.out.println("please pick valid country");
 										System.out.println(storedTerritory.country_id + " adjacent to " + gui.selectedTerritory + board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory));
+										System.out.println(board.getGameMap().getTerritory(storedTerritory.country_id).name + " " + storedTerritory.country_id);
 										System.out.println(board.getGameMap().getTerritory(storedTerritory.country_id).borderlist.toString());
-										System.out.println(board.getGameMap().getTerritory(storedTerritory.country_id).name);
-										System.out.println(board.getGameMap().getTerritory(gui.selectedTerritory).name);
+										System.out.println(board.getGameMap().getTerritory(gui.selectedTerritory).name + " " + gui.selectedTerritory);
+										System.out.println(board.getGameMap().getTerritory(gui.selectedTerritory).borderlist.toString());
 									}
 								}
 							}

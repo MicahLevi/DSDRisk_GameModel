@@ -68,6 +68,7 @@ public class GameState {
 		int atk_units = attack.num_armies;
 		int def_units = defend.num_armies;
 		//For now we attack until there is a winner
+		System.out.println("Calculating Winner");
 		while (atk_units > 0 && def_units > 0)
 		{
 			//Determine number of dice for attacker
@@ -107,11 +108,12 @@ public class GameState {
 					def_units--;
 				else
 					atk_units--;
+				i++;
 			}
 		}
 		//Attacking territory always loses the units it sends
 		attack.num_armies -= num_units;
-		
+		System.out.println("Setting Values");
 		//Defending territory goes to the winner
 		if (def_units > 0)
 		{
@@ -125,7 +127,20 @@ public class GameState {
 		
 		map[attack_id] = attack;
 		map[defend_id] = defend;
-		return new int[][]{atk_dice, def_dice};
+		System.out.println("Attack Returning");
+		int[][] retDice = new int[2][3];
+		for (int x=0; x<3; x++) {
+			if (atk_dice.length > x)
+				retDice[0][x] = atk_dice[x];
+			else
+				retDice[0][x] = 0;
+			
+			if (def_dice.length > x)
+				retDice[1][x] = def_dice[x];
+			else
+				retDice[1][x] = 0;
+		}
+		return retDice;
 	}
 	
 	/**
