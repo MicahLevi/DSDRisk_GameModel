@@ -258,9 +258,7 @@ public class ModelController {
 									if(!locState.isOwner(gui.selectedTerritory, self) && board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory))
 									{
 										TerritoryInfo def = locState.getmap()[gui.selectedTerritory];
-										System.out.println("Attacking...");
 										int[][] dice = attackCountry(storedTerritory.country_id, gui.selectedTerritory, storedTerritory.num_armies-1);
-										System.out.println("Showing Roll...");
 										gui.showRoll(locState.getPlayers()[self].getname(),
 													locState.getPlayers()[def.owner_id].getname(),
 													dice[0][0], dice[0][1], dice[0][2],
@@ -273,49 +271,51 @@ public class ModelController {
 									}
 									else{
 										System.out.println("please pick valid country");
-										System.out.println(storedTerritory.country_id + " adjacent to " + gui.selectedTerritory + board.territoryIsAdjacent(storedTerritory.country_id, gui.selectedTerritory));
-										System.out.println(board.getGameMap().getTerritory(storedTerritory.country_id).name + " " + storedTerritory.country_id);
-										System.out.println(board.getGameMap().getTerritory(storedTerritory.country_id).borderlist.toString());
-										System.out.println(board.getGameMap().getTerritory(gui.selectedTerritory).name + " " + gui.selectedTerritory);
-										System.out.println(board.getGameMap().getTerritory(gui.selectedTerritory).borderlist.toString());
 									}
 								}
 							}
 							gui.updateMap(locState.getmap());
 							break;
 						case 5: // Fortify
-							
-							System.out.println("waiting...");
-							gui.notify();
-							gui.wait();
-							System.out.println("response!");
-							if(heldId == -1){
-								if(locState.isOwner(gui.selectedTerritory, self)){
-									heldId = gui.selectedTerritory;
-									gui.setFortDest();
-								}
-								else{
-									System.out.println("please select a territory you own");
-								}
-								gui.selectedTerritory = -1;
+							if (gui.nextPhase) {
+								gui.turnPhase++;	//??
+								locState.incrementGamePhase();
+								gui.notTurn();
+								gui.nextPhase = false;
 							}
-							else{
-								if(locState.isOwner(gui.selectedTerritory, self)&&board.territoryIsAdjacent(heldId, gui.selectedTerritory)){
-									if(!fortifyCountry(heldId, gui.selectedTerritory, locState.getmap()[heldId].num_armies/2))
-									{
-										System.out.println("please select valid country");
-										gui.selectedTerritory = -1;
-										break;
+							else {
+								System.out.println("waiting...");
+								gui.notify();
+								gui.wait();
+								System.out.println("response!");
+								if(heldId == -1){
+									if(locState.isOwner(gui.selectedTerritory, self)){
+										heldId = gui.selectedTerritory;
+										gui.setFortDest();
 									}
-									locState.incrementGamePhase();
-									//storedTerritory = null;
+									else{
+										System.out.println("please select a territory you own");
+									}
 									gui.selectedTerritory = -1;
-									heldId = -1;
 								}
 								else{
-									System.out.println("Please select valid country");
+									if(locState.isOwner(gui.selectedTerritory, self)&&board.territoryIsAdjacent(heldId, gui.selectedTerritory)){
+										if(!fortifyCountry(heldId, gui.selectedTerritory, locState.getmap()[heldId].num_armies/2))
+										{
+											System.out.println("please select valid country");
+											gui.selectedTerritory = -1;
+											break;
+										}
+										locState.incrementGamePhase();
+										//storedTerritory = null;
+										gui.selectedTerritory = -1;
+										heldId = -1;
+									}
+									else{
+										System.out.println("Please select valid country");
+									}
+									gui.selectedTerritory = -1;
 								}
-								gui.selectedTerritory = -1;
 							}
 							gui.updateMap(locState.getmap());
 							break;

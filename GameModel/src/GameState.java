@@ -2,6 +2,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 public class GameState {
@@ -65,7 +66,7 @@ public class GameState {
 		if (attack.num_armies < num_units || num_units < 1
 			|| attack.num_armies < 2)
 			throw new Exception("Invalid number of units for attack");
-		int atk_units = attack.num_armies;
+		int atk_units = num_units;
 		int def_units = defend.num_armies;
 		//For now we attack until there is a winner
 		System.out.println("Calculating Winner");
@@ -81,11 +82,14 @@ public class GameState {
 					atk_dice = new int[]{(int)(Math.random()*6+1),
 					                     (int)(Math.random()*6+1)};
 					Arrays.sort(atk_dice);
+					atk_dice = reverseArray(atk_dice); //Because Java is terrible at sorting desc
 					break;
 				default:		// roll 3 dice
 					atk_dice = new int[] {(int)(Math.random()*6+1),
 					                      (int)(Math.random()*6+1),
 					                      (int)(Math.random()*6+1)};
+					Arrays.sort(atk_dice);
+					atk_dice = reverseArray(atk_dice);
 					break;
 			}
 			//Determine number of dice for defender
@@ -98,6 +102,7 @@ public class GameState {
 					def_dice = new int[]{(int)(Math.random()*6+1),
 										 (int)(Math.random()*6+1)};
 					Arrays.sort(def_dice);
+					def_dice = reverseArray(def_dice);
 					break;
 			}
 			int i = 0;
@@ -263,7 +268,14 @@ public class GameState {
 		return true;
 	}
 	
-	
+	public int[] reverseArray(int[] a) {
+		for (int i = 0; i<a.length/2; i++) {
+			int temp = a[i];
+			a[i] = a[a.length-i-1];
+			a[a.length-i-1] = temp;
+		}
+		return a;
+	}
 	
 	/**
 	 * Does the calculation for how many armies to get based on territory

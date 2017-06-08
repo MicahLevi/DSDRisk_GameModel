@@ -393,6 +393,7 @@ public class GUIRiskGame extends JPanel implements Runnable{
 		{
 			public void actionPerformed(ActionEvent e)
 			{
+				nextPhase = true;
 				System.out.println("endTurn clicked");
 			}
 		});
