@@ -23,7 +23,7 @@ public class Main {
 		GameState testState = allModels.get(0).getGameState();
 		while(true){
 			for(int i = 0; i<players.length;i++)
-				testState = allModels.get(i).playTurn(testState);
+				testState = (GameState) allModels.get(i).parseObj(allModels.get(i).playTurn(testState),GameState.class);
 			if(testState.getWinner()!=-1)
 			{
 				System.out.println("GG player " + testState.getWinner()+ " wins!");

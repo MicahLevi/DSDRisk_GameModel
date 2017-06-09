@@ -94,8 +94,10 @@ public class ModelController {
 		//gui.spawnGame(null, mapImg, String.valueOf(players.length));
 	}
 	
-	
-	public GameState playTurn(Object currState){
+	public String playTurn(Object currState){
+		return convertToJson(playATurn(currState));
+	}
+	public GameState playATurn(Object currState){
 		//TODO: get currstate properly through json functions
 		locState = (GameState) parseObj(currState,GameState.class);
 		if(locState==null)
@@ -446,9 +448,9 @@ public class ModelController {
 	private void setInitialArmies() {
 		board.addArmyPool(getTurnStartArmies());
 	}
-	private Object parseObj(Object obj, Class<GameState> aClass) {
+	public Object parseObj(Object obj, Class<GameState> aClass) {
 		Object aObj = null;
-		if(obj == String.class) {
+		if(obj instanceof String) {
 			try {
 				aObj = gson.fromJson((String) obj, aClass);
 			} catch (Exception e) {
@@ -659,6 +661,16 @@ public class ModelController {
 		bf.write(jsonPretty);
 		bf.close();
 	}
+	
+	public String convertToJson(Object obj){
+		JsonParser parser = new JsonParser();
+		Gson aGson = new GsonBuilder().setPrettyPrinting().create();
+		String json = aGson.toJson(obj);
+		JsonElement el = parser.parse(json);
+		String jsonPretty = aGson.toJson(el);
+		return jsonPretty;
+	}
+	
 	public Board getBoard(){
 		return board;
 	}
