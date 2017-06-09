@@ -9,8 +9,8 @@ public class Main {
 		String mapFileBoard = "maps/world.map";
 		String mapImg = "imgs/Classic.jpg";
 		String numPlayer = "5";
-		Player[] players = new Player[2];
-		for (int i = 0; i<2; i++) {
+		Player[] players = new Player[1];
+		for (int i = 0; i<1; i++) {
 			players[i] = new Player("Player_" + i, i);
 		}
 		
@@ -21,10 +21,15 @@ public class Main {
 			allModels.get(i).initGame(mapFileGui,mapFileBoard, mapImg, players, i);
 		}
 		GameState testState = allModels.get(0).getGameState();
-		while(true)
-			for(int i = 0; i<players.length;i++){
+		while(true){
+			for(int i = 0; i<players.length;i++)
 				testState = allModels.get(i).playTurn(testState);
+			if(testState.getWinner()!=-1)
+			{
+				System.out.println("GG player " + testState.getWinner()+ " wins!");
+				break;
 			}
+		}
 		/*try {
 			allModels.get(0).saveObjToFile("GameState.json", allModels.get(0).getGameState());
 		} catch (IOException e) {

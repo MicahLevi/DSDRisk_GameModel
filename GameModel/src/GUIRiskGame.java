@@ -890,7 +890,7 @@ public class GUIRiskGame extends JPanel implements Runnable{
 				}
 				//check to see if the global was clicked(something was clicked/flagged)
 				//System.out.println(selectedTerritory);
-				if(selectedTerritory!=-1){
+				if(selectedTerritory!=-1||nextPhase){
 					System.out.println("aGlobal: " + selectedTerritory);
 					//notify the parent that something was clicked
 					notify();

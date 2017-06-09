@@ -112,16 +112,21 @@ public class ModelController {
 		synchronized(gui){
 			System.out.println("and here");
 			try {
-				Thread.sleep(200);
+				Thread.sleep(100);
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			try {
+				locState.setWinner(locState.winCheck());
+				if(locState.getWinner()!=-1){
+					//gui show winner
+					return locState;
+				}
 				//infinite loop. not necessary but shows how this works with checking with responses
 				while(true){
 					//System.out.println("ping");
-					Thread.sleep(200);
+					Thread.sleep(100);
 					System.out.println(locState.getgamePhase());
 					gui.updateMap(locState.getmap());
 					switch (locState.getgamePhase()) {
@@ -215,6 +220,11 @@ public class ModelController {
 							gui.updateMap(locState.getmap());
 							break;
 						case 4: // Attack
+							locState.setWinner(locState.winCheck());
+							if(locState.getWinner()!=-1){
+								locState.setgamePhase(6);
+								break;
+							}
 							if (gui.nextPhase) {
 								gui.turnPhase++;	//??
 								locState.incrementGamePhase();
@@ -277,6 +287,10 @@ public class ModelController {
 							gui.updateMap(locState.getmap());
 							break;
 						case 5: // Fortify
+							System.out.println("waiting...");
+							gui.notify();
+							gui.wait();
+							System.out.println("response!");
 							if (gui.nextPhase) {
 								gui.turnPhase++;	//??
 								locState.incrementGamePhase();
@@ -284,10 +298,6 @@ public class ModelController {
 								gui.nextPhase = false;
 							}
 							else {
-								System.out.println("waiting...");
-								gui.notify();
-								gui.wait();
-								System.out.println("response!");
 								if(heldId == -1){
 									if(locState.isOwner(gui.selectedTerritory, self)){
 										heldId = gui.selectedTerritory;
@@ -321,6 +331,10 @@ public class ModelController {
 							break;
 						case 6: // end turn
 							System.out.println("Ending Turn");
+							if(locState.getWinner()!=-1)
+							{
+								//display winner
+							}
 							gui.notTurn();
 							locState.setgamePhase(3);//set to deploy
 							gui.selectedTerritory = -1;//set control for gui back to -1

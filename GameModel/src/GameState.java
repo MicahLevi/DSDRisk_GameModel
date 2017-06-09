@@ -22,7 +22,7 @@ public class GameState {
 		players = playerArray; 
 		turnToken = 0;
 		gamePhase = 1;
-		winner = 0;
+		winner = -1;
 		deck = new Card[5];
 		for(int i = 0; i<deck.length;i++)
 			deck[i] = new Card();
@@ -352,6 +352,12 @@ public class GameState {
 	}
 	public void setDeck(Card[] deck) {
 		this.deck = deck;
+	}
+	public int getWinner() {
+		return winner;
+	}
+	public void setWinner(int winner) {
+		this.winner = winner;
 	}
 
 }
