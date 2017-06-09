@@ -204,13 +204,15 @@ public class GameState {
 	public int winCheck() {
 		int owner = -1;
 		for(TerritoryInfo army: map) {
-			if(owner == -1)
-				owner = army.owner_id;
+			if(owner == -1){
+				if(army.owner_id==-1)
+					return -1;
+				else
+					owner = army.owner_id;
+			}
 			else
-			{
 				if(owner != army.owner_id)
 					return -1;
-			}
 		}
 		return owner;
 	}
